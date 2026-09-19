@@ -1,5 +1,9 @@
 # P10-Core — A Certificate-Carrying Verification Protocol with Explicit Trust Boundaries
 
+<p align="center">
+  <img src="assets/p10_core_banner.png" alt="P10-Core Verification Protocol" width="100%">
+</p>
+
 **Milestone:** `P10-Core / FourEvidence — First Machine-Checked Seed`  
 **Release Tag:** `v0.1.0-four-evidence`  
 **Author:** VolMax Studio Lab / Nestorov, Ivan (ORCID: [`0009-0006-7940-9539`](https://orcid.org/0009-0006-7940-9539))  
@@ -125,6 +129,8 @@ To prevent marketing overclaims and maintain rigorous scientific hygiene:
 
 ```text
 p10-core/
+├── assets/
+│   └── p10_core_banner.png        # Official project banner
 ├── AXIOM_AUDIT.md                 # Complete axiom and trust boundary audit
 ├── CITATION.cff                   # Academic citation metadata
 ├── LICENSE                        # Apache 2.0 License
