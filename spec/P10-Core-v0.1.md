@@ -13,9 +13,9 @@ It does **not** define an internal truth predicate, prove the global reliability
 The core distinction is:
 
 \[
-\operatorname{Truth}_{M}(c)
+\mathrm{Truth}_{M}(c)
 \quad\neq\quad
-\operatorname{Supports}_{P}(e,c,v).
+\mathrm{Supports}_{P}(e,c,v).
 \]
 
 `Truth_M(c)` is an external semantic assertion relative to a model or intended interpretation \(M\). `Supports_P(e,c,v)` is a checkable protocol judgement: under frozen protocol instance \(P\), evidence bundle \(e\) supports verdict \(v\) about claim \(c\).
@@ -112,7 +112,7 @@ Their meanings are procedural:
 In particular,
 
 \[
-\mathbf{NotDemonstrated}(c)\not\Rightarrow\neg\operatorname{Truth}_{M}(c).
+\mathbf{NotDemonstrated}(c)\not\Rightarrow\neg\mathrm{Truth}_{M}(c).
 \]
 
 Projects MAY extend the vocabulary, but each additional verdict MUST have disjoint entry conditions or an explicit precedence rule.
@@ -132,7 +132,7 @@ means that the frozen checker deterministically evaluates canonical \((e,c)\), p
 ### 3.2 Protocol support
 
 \[
-\operatorname{Supports}_{P}(e,c,v)
+\mathrm{Supports}_{P}(e,c,v)
 \]
 
 holds iff all of the following hold:
@@ -150,14 +150,14 @@ This judgement is about compliance with \(P\), not about truth in \(M\).
 ### 3.3 Issued verdict
 
 \[
-\operatorname{Issued}_{P}(e,c,v,h)
+\mathrm{Issued}_{P}(e,c,v,h)
 \;\overset{def}{\Longleftrightarrow}\;
-\operatorname{Supports}_{P}(e,c,v)\land H(h,\kappa,\mathrm{accept}).
+\mathrm{Supports}_{P}(e,c,v)\land H(h,\kappa,\mathrm{accept}).
 \]
 
 Human ratification MAY accept or reject a supported result, but MUST NOT turn an unsupported result into a P10-Core verdict. An override, if governance permits it, MUST be recorded as `ManualOverride`, outside the P10-Core judgement.
 
-Human ratification is therefore a declared trust boundary, not a proof rule establishing \(\operatorname{Truth}_{M}(c)\).
+Human ratification is therefore a declared trust boundary, not a proof rule establishing \(\mathrm{Truth}_{M}(c)\).
 
 ## 4. Transition-chain model
 
@@ -187,7 +187,7 @@ where \(a_i\) identifies the responsible agent or component and \(q_i\) is a loc
 The checker MUST verify:
 
 \[
-\operatorname{Check}_i(F,x_{i-1},x_i,q_i)=1
+\mathrm{Check}_i(F,x_{i-1},x_i,q_i)=1
 \]
 
 for every mandatory transition. Missing mandatory certificates MUST fail closed to a non-`Verified` verdict.
@@ -199,9 +199,9 @@ for every mandatory transition. Missing mandatory certificates MUST fail closed 
 Procedural soundness is internal and intentionally modest:
 
 \[
-\operatorname{Issued}_{P}(e,c,v,h)
+\mathrm{Issued}_{P}(e,c,v,h)
 \Rightarrow
-\operatorname{Supports}_{P}(e,c,v).
+\mathrm{Supports}_{P}(e,c,v).
 \]
 
 It follows from the definition of `Issued`, provided the certificate checker and ratification binding behave as specified. This establishes that the verdict was produced according to the frozen protocol.
@@ -211,7 +211,7 @@ It follows from the definition of `Issued`, provided the certificate checker and
 For each transition, let \(S_i(x_{i-1},x_i)\) be the intended external semantic relation. A bridge assumption has the form
 
 \[
-B_i:\quad \operatorname{Check}_i(F,x_{i-1},x_i,q_i)=1
+B_i:\quad \mathrm{Check}_i(F,x_{i-1},x_i,q_i)=1
 \Rightarrow S_i(x_{i-1},x_i).
 \]
 
@@ -224,7 +224,7 @@ S_1;S_2;\cdots;S_n\subseteq G_v,
 then:
 
 \[
-\operatorname{Supports}_{P}(e,c,v)
+\mathrm{Supports}_{P}(e,c,v)
 \land\bigwedge_i B_i
 \Rightarrow G_v(c,e).
 \]
@@ -232,14 +232,14 @@ then:
 For a project that intends `Verified` to imply truth, it must additionally justify
 
 \[
-G_{\mathbf{Verified}}(c,e)\Rightarrow\operatorname{Truth}_{M}(c).
+G_{\mathbf{Verified}}(c,e)\Rightarrow\mathrm{Truth}_{M}(c).
 \]
 
 This is a **relative, conditional guarantee**. P10-Core itself MUST NOT collapse these bridge assumptions into the internal axiom
 
 \[
-\operatorname{Supports}_{P}(e,c,\mathbf{Verified})
-\Rightarrow\operatorname{Truth}_{M}(c).
+\mathrm{Supports}_{P}(e,c,\mathbf{Verified})
+\Rightarrow\mathrm{Truth}_{M}(c).
 \]
 
 Every published semantic claim MUST list the bridge assumptions on which it depends.
@@ -311,7 +311,7 @@ The target MUST be a finite property, for example:
 A valid conclusion is scoped:
 
 \[
-\operatorname{Supports}_{P^*}(e^*,
+\mathrm{Supports}_{P^*}(e^*,
 \text{“implementation }I\text{ version }z\text{ satisfies property }p
 \text{ on domain }d\text{”},v).
 \]

@@ -15,9 +15,9 @@ It does **not** define an internal truth predicate, prove the global reliability
 The core distinction is:
 
 \[
-\operatorname{Truth}_{M}(c)
+\mathrm{Truth}_{M}(c)
 \quad\neq\quad
-\operatorname{Supports}_{P}(e,c,v,\kappa).
+\mathrm{Supports}_{P}(e,c,v,\kappa).
 \]
 
 `Truth_M(c)` is an external semantic assertion relative to a model or intended interpretation \(M\). `Supports_P(e,c,v,κ)` is a declarative protocol judgement: under frozen protocol instance \(P\), certificate \(\kappa\) establishes that evidence bundle \(e\) supports verdict \(v\) about claim \(c\).
@@ -107,10 +107,10 @@ The minimal claim-verdict vocabulary is
 Let \(\mathcal K_F\) be the certificate space selected by the frozen schema, \(\mathcal R_P\) the run-error-record space, and \(\mathcal A_H\) the ratifier-identity space. The total mechanical run outcome is the tagged sum
 
 \[
-\operatorname{RunOutcome}_0=
-\operatorname{Verdict}(\mathcal V_0\times\mathcal K_F)
+\mathrm{RunOutcome}_0=
+\mathrm{Verdict}(\mathcal V_0\times\mathcal K_F)
 \;\uplus\;
-\operatorname{ProtocolError}(\mathcal E_P\times\mathcal R_P),
+\mathrm{ProtocolError}(\mathcal E_P\times\mathcal R_P),
 \]
 
 where \(\mathcal E_P\) is the set of typed protocol-error witnesses. `ProtocolError` is not a claim verdict.
@@ -118,12 +118,12 @@ where \(\mathcal E_P\) is the set of typed protocol-error witnesses. `ProtocolEr
 Human handling is a separate tagged sum:
 
 \[
-\operatorname{IssuanceOutcome}_0=
-\operatorname{Issued}(\mathcal V_0\times\mathcal K_F\times\mathcal A_H)
+\mathrm{IssuanceOutcome}_0=
+\mathrm{Issued}(\mathcal V_0\times\mathcal K_F\times\mathcal A_H)
 \;\uplus\;
-\operatorname{RejectedByRatifier}(\mathcal V_0\times\mathcal K_F\times\mathcal A_H)
+\mathrm{RejectedByRatifier}(\mathcal V_0\times\mathcal K_F\times\mathcal A_H)
 \;\uplus\;
-\operatorname{RatificationError}(\mathcal E_H).
+\mathrm{RatificationError}(\mathcal E_H).
 \]
 
 An issuance event cannot retroactively change the immutable `RunOutcome`.
@@ -141,13 +141,13 @@ The following is a core invariant rather than explanatory prose:
 \[
 \begin{aligned}
 \left(\exists\kappa\in\mathcal K_F,\;
-\operatorname{RunOutcome}_P(c,e)=
-\operatorname{Verdict}(\mathbf{NotDemonstrated},\kappa)\right)
-\Rightarrow{}&\operatorname{Evaluable}_P(c)\\
-&\land\operatorname{RunCompleted}_P(c,e)\\
-&\land\operatorname{EvidenceAdmissible}_P(e)\\
-&\land\operatorname{MandatoryChecksSucceeded}_P(c,e)\\
-&\land\neg\operatorname{VerifiedConditions}_P(c,e).
+\mathrm{RunOutcome}_P(c,e)=
+\mathrm{Verdict}(\mathbf{NotDemonstrated},\kappa)\right)
+\Rightarrow{}&\mathrm{Evaluable}_P(c)\\
+&\land\mathrm{RunCompleted}_P(c,e)\\
+&\land\mathrm{EvidenceAdmissible}_P(e)\\
+&\land\mathrm{MandatoryChecksSucceeded}_P(c,e)\\
+&\land\neg\mathrm{VerifiedConditions}_P(c,e).
 \end{aligned}
 \]
 
@@ -155,14 +155,14 @@ Similarly,
 
 \[
 \left(\exists\kappa\in\mathcal K_F,\;
-\operatorname{RunOutcome}_P(c,e)=
-\operatorname{Verdict}(\mathbf{Verified},\kappa)\right)
+\mathrm{RunOutcome}_P(c,e)=
+\mathrm{Verdict}(\mathbf{Verified},\kappa)\right)
 \Rightarrow
-\operatorname{Evaluable}_P(c)\land
-\operatorname{RunCompleted}_P(c,e)\land
-\operatorname{EvidenceAdmissible}_P(e)\land
-\operatorname{MandatoryChecksSucceeded}_P(c,e)\land
-\operatorname{VerifiedConditions}_P(c,e).
+\mathrm{Evaluable}_P(c)\land
+\mathrm{RunCompleted}_P(c,e)\land
+\mathrm{EvidenceAdmissible}_P(e)\land
+\mathrm{MandatoryChecksSucceeded}_P(c,e)\land
+\mathrm{VerifiedConditions}_P(c,e).
 \]
 
 The constructors of `RunOutcome` and `IssuanceOutcome` are pairwise disjoint. Raw run faults may coexist, but the frozen evaluator MUST return exactly one tagged run outcome using the fixed phase order in Section 11. A missing prerequisite cannot yield `NotDemonstrated`; an internal procedural failure cannot yield `Deferred`.
@@ -171,9 +171,9 @@ In particular,
 
 \[
 \left(\exists\kappa\in\mathcal K_F,\;
-\operatorname{RunOutcome}_P(c,e)=
-\operatorname{Verdict}(\mathbf{NotDemonstrated},\kappa)\right)
-\not\Rightarrow\neg\operatorname{Truth}_{M}(c).
+\mathrm{RunOutcome}_P(c,e)=
+\mathrm{Verdict}(\mathbf{NotDemonstrated},\kappa)\right)
+\not\Rightarrow\neg\mathrm{Truth}_{M}(c).
 \]
 
 Projects MAY extend the vocabulary, but every extension MUST preserve typed, pairwise-disjoint terminal outcomes.
@@ -186,14 +186,14 @@ P10-Core separates mechanical execution, declarative support, and issuance.
 
 \[
 P\vdash_{\mathrm{run}}(e,c)\Downarrow
-\operatorname{Verdict}(v,\kappa)
+\mathrm{Verdict}(v,\kappa)
 \]
 
 means that the frozen evaluator deterministically processes canonical \((e,c)\), produces claim verdict \(v\), and emits certificate \(\kappa\). A mechanical failure instead produces
 
 \[
 P\vdash_{\mathrm{run}}(e,c)\Downarrow
-\operatorname{ProtocolError}(\epsilon,\rho),
+\mathrm{ProtocolError}(\epsilon,\rho),
 \]
 
 where \(\rho\) is an error record. Protocol errors never construct `Supports`.
@@ -201,7 +201,7 @@ where \(\rho\) is an error record. Protocol errors never construct `Supports`.
 ### 3.2 Verdict-indexed protocol support
 
 \[
-\operatorname{Supports}_{P}(e,c,v,\kappa)
+\mathrm{Supports}_{P}(e,c,v,\kappa)
 \]
 
 is an inductive relation indexed by the verdict. Its constructors are disjoint by construction. Define `PreflightOK` to mean that every frozen binding matches; the certificate and data schemas parse; the evidence manifest is canonical; all supplied digests verify; every supplied item is admissible; and \(\kappa\) commits to the preflight result. `CertificateBinds` additionally means that \(\kappa\) commits to the exact \((P,c,e,v)\) tuple and its verdict-specific witness.
@@ -211,54 +211,54 @@ The minimal constructors are:
 \[
 \frac{
 \begin{array}{c}
-\operatorname{PreflightOK}_P(c,e,\kappa)\quad
-\operatorname{Evaluable}_P(c)\quad
-\operatorname{RunCompleted}_P(c,e)\\
-\operatorname{MandatoryChecksSucceeded}_P(c,e)\quad
-\operatorname{TransitionsValid}_P(c,e,\kappa)\quad
-\operatorname{VerifiedConditions}_P(c,e)\quad
-\operatorname{CertificateBinds}_P(c,e,\mathbf{Verified},\kappa)
+\mathrm{PreflightOK}_P(c,e,\kappa)\quad
+\mathrm{Evaluable}_P(c)\quad
+\mathrm{RunCompleted}_P(c,e)\\
+\mathrm{MandatoryChecksSucceeded}_P(c,e)\quad
+\mathrm{TransitionsValid}_P(c,e,\kappa)\quad
+\mathrm{VerifiedConditions}_P(c,e)\quad
+\mathrm{CertificateBinds}_P(c,e,\mathbf{Verified},\kappa)
 \end{array}}
-{\operatorname{Supports}_P(e,c,\mathbf{Verified},\kappa)}
+{\mathrm{Supports}_P(e,c,\mathbf{Verified},\kappa)}
 \;\textsc{supportsVerified}
 \]
 
 \[
 \frac{
 \begin{array}{c}
-\operatorname{PreflightOK}_P(c,e,\kappa)\quad
-\operatorname{Evaluable}_P(c)\quad
-\operatorname{RunCompleted}_P(c,e)\\
-\operatorname{MandatoryChecksSucceeded}_P(c,e)\quad
-\operatorname{TransitionsValid}_P(c,e,\kappa)\quad
-\neg\operatorname{VerifiedConditions}_P(c,e)\quad
-\operatorname{CertificateBinds}_P(c,e,\mathbf{NotDemonstrated},\kappa)
+\mathrm{PreflightOK}_P(c,e,\kappa)\quad
+\mathrm{Evaluable}_P(c)\quad
+\mathrm{RunCompleted}_P(c,e)\\
+\mathrm{MandatoryChecksSucceeded}_P(c,e)\quad
+\mathrm{TransitionsValid}_P(c,e,\kappa)\quad
+\neg\mathrm{VerifiedConditions}_P(c,e)\quad
+\mathrm{CertificateBinds}_P(c,e,\mathbf{NotDemonstrated},\kappa)
 \end{array}}
-{\operatorname{Supports}_P(e,c,\mathbf{NotDemonstrated},\kappa)}
+{\mathrm{Supports}_P(e,c,\mathbf{NotDemonstrated},\kappa)}
 \;\textsc{supportsNotDemonstrated}
 \]
 
 \[
 \frac{
-\operatorname{PreflightOK}_P(c,e,\kappa)\quad
-\neg\operatorname{Operationalizable}_P(c)\quad
-\operatorname{CertifiesReason}(\kappa,\mathrm{unfalsifiable})\quad
-\operatorname{CertificateBinds}_P(c,e,\mathbf{UnfalsifiableAsStated},\kappa)}
-{\operatorname{Supports}_P(e,c,\mathbf{UnfalsifiableAsStated},\kappa)}
+\mathrm{PreflightOK}_P(c,e,\kappa)\quad
+\neg\mathrm{Operationalizable}_P(c)\quad
+\mathrm{CertifiesReason}(\kappa,\mathrm{unfalsifiable})\quad
+\mathrm{CertificateBinds}_P(c,e,\mathbf{UnfalsifiableAsStated},\kappa)}
+{\mathrm{Supports}_P(e,c,\mathbf{UnfalsifiableAsStated},\kappa)}
 \;\textsc{supportsUnfalsifiable}
 \]
 
 \[
 \frac{
 \begin{array}{c}
-\operatorname{PreflightOK}_P(c,e,\kappa)\quad
-\operatorname{Operationalizable}_P(c)\quad
-\operatorname{ExternalBlocker}_P(c,e,b)\\
-\operatorname{NoProtocolFault}_P(c,e)\quad
-\operatorname{CertifiesReason}(\kappa,b)\quad
-\operatorname{CertificateBinds}_P(c,e,\mathbf{Deferred},\kappa)
+\mathrm{PreflightOK}_P(c,e,\kappa)\quad
+\mathrm{Operationalizable}_P(c)\quad
+\mathrm{ExternalBlocker}_P(c,e,b)\\
+\mathrm{NoProtocolFault}_P(c,e)\quad
+\mathrm{CertifiesReason}(\kappa,b)\quad
+\mathrm{CertificateBinds}_P(c,e,\mathbf{Deferred},\kappa)
 \end{array}}
-{\operatorname{Supports}_P(e,c,\mathbf{Deferred},\kappa)}
+{\mathrm{Supports}_P(e,c,\mathbf{Deferred},\kappa)}
 \;\textsc{supportsDeferred}
 \]
 
@@ -267,15 +267,15 @@ The minimal constructors are:
 ### 3.3 Issuance
 
 \[
-\operatorname{Issued}_{P}(e,c,v,\kappa,h)
+\mathrm{Issued}_{P}(e,c,v,\kappa,h)
 \;\overset{def}{\Longleftrightarrow}\;
-\operatorname{Supports}_{P}(e,c,v,\kappa)
+\mathrm{Supports}_{P}(e,c,v,\kappa)
 \land H(h,\kappa,\mathrm{accept}).
 \]
 
 Ratifier rejection produces `RejectedByRatifier`; a mismatched certificate, invalid ratifier binding, or ratification-system failure produces `RatificationError`. Neither changes the earlier mechanical run outcome.
 
-Human ratification MAY accept or reject a supported result, but MUST NOT turn an unsupported result into a P10-Core verdict. An override, if governance permits it, MUST be recorded as `ManualOverride`, outside the P10-Core judgement. Ratification is a declared trust boundary, not a proof rule establishing \(\operatorname{Truth}_{M}(c)\).
+Human ratification MAY accept or reject a supported result, but MUST NOT turn an unsupported result into a P10-Core verdict. An override, if governance permits it, MUST be recorded as `ManualOverride`, outside the P10-Core judgement. Ratification is a declared trust boundary, not a proof rule establishing \(\mathrm{Truth}_{M}(c)\).
 
 ## 4. Transition-chain model
 
@@ -297,31 +297,31 @@ with the reference decomposition
 Each transition is a typed partial computation
 
 \[
-T_i:X_{i-1}\to \operatorname{Result}(X_i,\mathcal E_i),
+T_i:X_{i-1}\to \mathrm{Result}(X_i,\mathcal E_i),
 \]
 
 and successful composition requires
 
 \[
-\operatorname{SuccCod}(T_i)\subseteq X_i
-=\operatorname{dom}(T_{i+1}).
+\mathrm{SuccCod}(T_i)\subseteq X_i
+=\mathrm{dom}(T_{i+1}).
 \]
 
-Here \(\operatorname{SuccCod}(T_i)\) contains only successful outputs, excluding \(\mathcal E_i\).
+Here \(\mathrm{SuccCod}(T_i)\) contains only successful outputs, excluding \(\mathcal E_i\).
 
-Type compatibility is necessary but not sufficient. Each transition therefore also has a preservation contract \(\operatorname{Contract}_i\), an input/output invariant pair \(I_{i-1},I_i\), and a claim-fidelity relation \(\Phi_i(c,x_i)\).
+Type compatibility is necessary but not sufficient. Each transition therefore also has a preservation contract \(\mathrm{Contract}_i\), an input/output invariant pair \(I_{i-1},I_i\), and a claim-fidelity relation \(\Phi_i(c,x_i)\).
 
 Each transition record is
 
 \[
-\tau_i=(x_{i-1},x_i,T_i,\operatorname{Contract}_i,I_i,\Phi_i,a_i,q_i),
+\tau_i=(x_{i-1},x_i,T_i,\mathrm{Contract}_i,I_i,\Phi_i,a_i,q_i),
 \]
 
 where \(a_i\) identifies the responsible agent or component and \(q_i\) is a locally checkable certificate. A conforming transition MUST satisfy the preservation obligations
 
 \[
 I_{i-1}(x_{i-1})\land
-\operatorname{Contract}_i(x_{i-1},x_i)
+\mathrm{Contract}_i(x_{i-1},x_i)
 \Rightarrow I_i(x_i)
 \]
 
@@ -329,7 +329,7 @@ and
 
 \[
 \Phi_{i-1}(c,x_{i-1})\land
-\operatorname{Contract}_i(x_{i-1},x_i)
+\mathrm{Contract}_i(x_{i-1},x_i)
 \Rightarrow \Phi_i(c,x_i).
 \]
 
@@ -338,8 +338,8 @@ The second obligation prevents a well-typed chain from silently changing the cla
 The checker MUST verify:
 
 \[
-\operatorname{Check}_i(F,x_{i-1},x_i,
-\operatorname{Contract}_i,I_i,\Phi_i,q_i)=1
+\mathrm{Check}_i(F,x_{i-1},x_i,
+\mathrm{Contract}_i,I_i,\Phi_i,q_i)=1
 \]
 
 for every mandatory transition. Missing or invalid mandatory certificates and failed preservation obligations MUST produce `ProtocolError`, never a claim verdict.
@@ -351,7 +351,7 @@ for every mandatory transition. Missing or invalid mandatory certificates and fa
 `Supports` is a declarative relation defined independently of the executable checker. Let
 
 \[
-\operatorname{CheckCert}(P,c,e,\kappa,v):\operatorname{Bool}
+\mathrm{CheckCert}(P,c,e,\kappa,v):\mathrm{Bool}
 \]
 
 be the independently executable certificate checker.
@@ -359,16 +359,16 @@ be the independently executable certificate checker.
 Frozen rules have a declarative semantics \(R_{sem}(r,x)\) independent of executable checking. For each rule class, the executable checker
 
 \[
-\operatorname{check}_R:R\to\operatorname{Input}\to\operatorname{Bool}
+\mathrm{check}_R:R\to\mathrm{Input}\to\mathrm{Bool}
 \]
 
 must satisfy the proved lemma
 
 \[
-\operatorname{RuleCheckerSound}
+\mathrm{RuleCheckerSound}
 \;\overset{def}{\Longleftrightarrow}\;
 \forall r\,x,\;
-\operatorname{check}_R(r,x)=\mathrm{true}
+\mathrm{check}_R(r,x)=\mathrm{true}
 \Rightarrow R_{sem}(r,x).
 \]
 
@@ -377,10 +377,10 @@ The primary procedural theorem obligation is therefore:
 \[
 \boxed{
 \left(A_{parse}\land A_{canon}\land A_{digest}
-\land\operatorname{RuleCheckerSound}\right)
-\land\operatorname{CheckCert}(P,c,e,\kappa,v)=\mathrm{true}
+\land\mathrm{RuleCheckerSound}\right)
+\land\mathrm{CheckCert}(P,c,e,\kappa,v)=\mathrm{true}
 \Rightarrow
-\operatorname{Supports}_{P}(e,c,v,\kappa)
+\mathrm{Supports}_{P}(e,c,v,\kappa)
 }
 \]
 
@@ -397,14 +397,14 @@ The proof MUST establish at least:
 1. every material field required by `Supports` is committed to by \(\kappa\);
 2. all frozen bindings match;
 3. all transition contracts, invariants, and fidelity relations validate;
-4. the checked decision result is \(\operatorname{Verdict}(v)\), not `ProtocolError`;
+4. the checked decision result is \(\mathrm{Verdict}(v)\), not `ProtocolError`;
 5. no unchecked producer assertion is used to derive `Supports`.
 
 The earlier statement
 
 \[
-\operatorname{Issued}_{P}(e,c,v,\kappa,h)\Rightarrow
-\operatorname{Supports}_{P}(e,c,v,\kappa)
+\mathrm{Issued}_{P}(e,c,v,\kappa,h)\Rightarrow
+\mathrm{Supports}_{P}(e,c,v,\kappa)
 \]
 
 remains a definitional corollary of `Issued`; it is not the substantive soundness theorem.
@@ -414,7 +414,7 @@ remains a definitional corollary of `Issued`; it is not the substantive soundnes
 For each transition, let \(S_i(x_{i-1},x_i)\) be the intended external semantic relation. A bridge assumption has the form
 
 \[
-B_i:\quad \operatorname{LocalValid}_i(F,\tau_i)=1
+B_i:\quad \mathrm{LocalValid}_i(F,\tau_i)=1
 \Rightarrow S_i(x_{i-1},x_i).
 \]
 
@@ -427,7 +427,7 @@ S_1;S_2;\cdots;S_n\subseteq G_v,
 then:
 
 \[
-\operatorname{Supports}_{P}(e,c,v,\kappa)
+\mathrm{Supports}_{P}(e,c,v,\kappa)
 \land\bigwedge_i B_i
 \Rightarrow G_v(c,e).
 \]
@@ -435,14 +435,14 @@ then:
 For a project that intends `Verified` to imply truth, it must additionally justify
 
 \[
-G_{\mathbf{Verified}}(c,e)\Rightarrow\operatorname{Truth}_{M}(c).
+G_{\mathbf{Verified}}(c,e)\Rightarrow\mathrm{Truth}_{M}(c).
 \]
 
 This is a **relative, conditional guarantee**. P10-Core itself MUST NOT collapse these bridge assumptions into the internal axiom
 
 \[
-\operatorname{Supports}_{P}(e,c,\mathbf{Verified},\kappa)
-\Rightarrow\operatorname{Truth}_{M}(c).
+\mathrm{Supports}_{P}(e,c,\mathbf{Verified},\kappa)
+\Rightarrow\mathrm{Truth}_{M}(c).
 \]
 
 Every published semantic claim MUST list the bridge assumptions on which it depends.
@@ -530,7 +530,7 @@ The target MUST be a finite property, for example:
 A valid conclusion is scoped:
 
 \[
-\operatorname{Supports}_{P^*}(e^*,
+\mathrm{Supports}_{P^*}(e^*,
 \text{“implementation }I\text{ version }z\text{ satisfies property }p
 \text{ on domain }d\text{”},v,\kappa^*).
 \]
@@ -666,17 +666,17 @@ The next formal step is one deliberately synthetic Lean instance. A suitable see
 The first machine-checked target is only:
 
 \[
-\operatorname{CheckCert}(P,c,e,\kappa,v)=\mathrm{true}
+\mathrm{CheckCert}(P,c,e,\kappa,v)=\mathrm{true}
 \Rightarrow
-\operatorname{Supports}_P(e,c,v,\kappa)
+\mathrm{Supports}_P(e,c,v,\kappa)
 \]
 
 for that fully instantiated frozen chain, with no `sorry` and no hidden axioms. The sole unproved premise SHOULD be digest injectivity, exposed as an explicit parameter rather than asserted inside the checker. The subsequent target is the conditional composition theorem
 
 \[
-\bigwedge_i\operatorname{LocalSound}_i
-\land\bigwedge_i\operatorname{Fidelity}_i
-\Rightarrow\operatorname{GlobalSupport}.
+\bigwedge_i\mathrm{LocalSound}_i
+\land\bigwedge_i\mathrm{Fidelity}_i
+\Rightarrow\mathrm{GlobalSupport}.
 \]
 
 Only after both targets are discharged should a P10-audit-P10 experiment be frozen.

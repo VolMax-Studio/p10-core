@@ -19,7 +19,7 @@
 
 Rather than acting as an ungrounded or autonomous "truth machine," P10-Core formalizes the strict mathematical demarcation between ontological truth and evidentiary support:
 
-$$\operatorname{Truth}_M(c) \;\neq\; \operatorname{Supports}_P(e, c, \kappa, v)$$
+$$\mathrm{Truth}_M(c) \neq \mathrm{Supports}_P(e, c, \kappa, v)$$
 
 A positive verification indicates that an admissible evidence bundle $e$, evaluated under frozen protocol rules $P$, deterministically yields certificate $\kappa$ supporting verdict $v$. When evidence is insufficient, the protocol does not declare falsehood; it strictly and soundly outputs `NotDemonstrated`.
 
@@ -41,9 +41,9 @@ where:
 - **$\mathcal{V}$ (Verdicts):** The discrete, mutually disjoint verdict type:
   $$\mathcal{V} = \{\texttt{verified}, \texttt{notDemonstrated}, \texttt{unfalsifiableAsStated}, \texttt{deferred}\}$$
 - **$D$ (Decision Procedure):** The computable function mapping inputs to a run outcome:
-  $$\operatorname{RunOutcome} = \operatorname{Verdict}(v, \kappa) \;\uplus\; \operatorname{ProtocolError}(\epsilon, \rho)$$
+  $$\mathrm{RunOutcome} = \mathrm{Verdict}(v, \kappa) \uplus \mathrm{ProtocolError}(\epsilon, \rho)$$
 - **$H$ (Human Ratification):** The terminal socio-technical act separating mechanical execution from binding legal/institutional issuance:
-  $$\operatorname{IssuanceOutcome} = \operatorname{Issued} \;\uplus\; \operatorname{RejectedByRatifier} \;\uplus\; \operatorname{RatificationError}$$
+  $$\mathrm{IssuanceOutcome} = \mathrm{Issued} \uplus \mathrm{RejectedByRatifier} \uplus \mathrm{RatificationError}$$
 
 ---
 
