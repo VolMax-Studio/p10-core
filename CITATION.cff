@@ -6,7 +6,7 @@ authors:
     orcid: "https://orcid.org/0009-0006-7940-9539"
     affiliation: "VolMax Studio Lab"
 title: "P10-Core: A Certificate-Carrying Verification Protocol with Explicit Trust Boundaries"
-version: "0.1.0"
+version: "0.2.0"
 date-released: "2026-09-19"
 repository-code: "https://github.com/VolMax-Studio/p10-core"
 license: "Apache-2.0"

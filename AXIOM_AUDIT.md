@@ -1,46 +1,42 @@
-# Axiom and trust audit
+# Axiom and trust audit — v0.2.0-composition
 
-Audit target: Lean 4.34.0, `P10Core.Proofs.FourEvidence`.
+Audit target: Lean 4.34.0, `P10Core.Proofs.Composition`.
 
 ## Source scan
 
-The project contains no `sorry`, `admit`, or user-declared `axiom` command.
+All `.lean` sources were scanned. They contain no `sorry`, `admit`, or
+user-declared `axiom` command.
 
 ## Lean kernel report
 
-Running:
-
-```lean
-#print axioms P10Core.Proofs.FourEvidence.checkCert_sound
-#print axioms P10Core.Proofs.FourEvidence.verified_not_notDemonstrated
-```
-
-returns:
-
 ```text
 'P10Core.Proofs.FourEvidence.checkCert_sound' depends on axioms: [propext, Quot.sound]
-'P10Core.Proofs.FourEvidence.verified_not_notDemonstrated' does not depend on any axioms
+'P10Core.Proofs.Composition.conditionalComposition' does not depend on any axioms
+'P10Core.Proofs.Composition.fourEvidenceComposes' depends on axioms: [propext, Quot.sound]
+'P10Core.Proofs.Composition.missingCertificateCannotCompose' does not depend on any axioms
+'P10Core.Proofs.Composition.failedContractCannotCompose' does not depend on any axioms
+'P10Core.Proofs.Composition.brokenFidelityCannotCompose' depends on axioms: [propext]
 ```
 
-`propext` and `Quot.sound` are standard foundations exposed by Lean's own axiom
-report. They are recorded here rather than hidden under the phrase “no axioms.”
+`conditionalComposition` itself is constructive once its six named obligations
+are supplied. `fourEvidenceComposes` discharges those obligations and inherits
+only the standard Lean foundations already reported by the unchanged seed
+theorem.
 
-## Domain-specific premise
+## Explicit residual premise
 
-`checkCert_sound` quantifies over a `DigestModel`. Its field
+`DigestModel.injective : Function.Injective digest` remains the explicit
+domain-specific premise. It is a structure field supplied to the theorem, not a
+global or hidden axiom. No new residual premise is introduced by composition.
 
-```lean
-injective : Function.Injective digest
-```
+## Frozen-seed verification
 
-is the explicit external premise that permits equal evidence digests to imply
-equal evidence values. It is not installed as a global axiom and can later be
-replaced by a concrete digest model plus an appropriately scoped assumption or
-proof.
+The original `P10Core/Proofs/FourEvidence.lean` and
+`P10Core/Model/Calculus.lean` compare byte-for-byte equal with the frozen seed.
+The full seed tree was hashed before and after implementation and its manifest
+did not change.
 
-## Current theorem boundary
+## Claim boundary
 
-The proof establishes checker soundness for the synthetic `FourEvidence`
-instance only. It does not establish cryptographic collision resistance,
-semantic truth of arbitrary claims, global P10 soundness, or the later
-transition-composition theorem.
+`GlobalSupport.protocolSupport` extracts the existing `Supports` judgement.
+Neither the type nor any composition theorem contains `Truth_M`.
