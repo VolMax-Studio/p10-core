@@ -9,30 +9,47 @@ open P10Core.Instances.FourEvidence.Composition
 
 theorem localSound1 : LocalSound1 := by
   intro τ x0 x1 h
-  exact (of_decide_eq_true h).2.1
+  cases τ with
+  | none => simp [check1] at h
+  | some cert => exact (of_decide_eq_true h).2.1
 
 theorem fidelity1 : Fidelity1 := by
   intro τ x0 x1 h
-  exact (of_decide_eq_true h).2.2
+  cases τ with
+  | none => simp [check1] at h
+  | some cert => exact (of_decide_eq_true h).2.2
 
 theorem localSound2 : LocalSound2 := by
   intro τ x1 x2 h
-  exact (of_decide_eq_true h).2.1
+  cases τ with
+  | none => simp [check2] at h
+  | some cert => exact (of_decide_eq_true h).2.1
 
 theorem fidelity2 : Fidelity2 := by
   intro τ x1 x2 h
-  exact (of_decide_eq_true h).2.2
+  cases τ with
+  | none => simp [check2] at h
+  | some cert => exact (of_decide_eq_true h).2.2
 
 theorem localSound3 (D : DigestModel) (P : Protocol) : LocalSound3 D P := by
   intro τ x2 x3 h
-  have parts := Bool.and_eq_true_iff.mp h
-  exact FourEvidence.checkCert_sound D P x3.claim x3.evidence
-    x3.certificate x3.verdict parts.2
+  cases τ with
+  | none => simp [check3] at h
+  | some cert =>
+      have parts := Bool.and_eq_true_iff.mp h
+      have agreement := of_decide_eq_true parts.1
+      have support := FourEvidence.checkCert_sound D P x3.claim x3.evidence
+        x3.certificate x3.verdict parts.2
+      exact ⟨agreement.2.1, agreement.2.2.1,
+        agreement.2.2.2.1, support⟩
 
 theorem fidelity3 (D : DigestModel) (P : Protocol) : Fidelity3 D P := by
   intro τ x2 x3 h
-  have parts := Bool.and_eq_true_iff.mp h
-  exact (of_decide_eq_true parts.1).2
+  cases τ with
+  | none => simp [check3] at h
+  | some cert =>
+      have parts := Bool.and_eq_true_iff.mp h
+      exact (of_decide_eq_true parts.1).2.2.2.2
 
 theorem compositionObligations (D : DigestModel) (P : Protocol) :
     CompositionObligations D P := by
@@ -41,7 +58,9 @@ theorem compositionObligations (D : DigestModel) (P : Protocol) :
 
 theorem conditionalComposition
     (D : DigestModel) (P : Protocol)
-    (τ1 τ2 τ3 : TransitionCertificate)
+    (τ1 : Option TransitionCertificate1)
+    (τ2 : Option TransitionCertificate2)
+    (τ3 : Option TransitionCertificate3)
     (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
     (hObligations : CompositionObligations D P)
     (hChecks : Composable D P τ1 τ2 τ3 x0 x1 x2 x3) :
@@ -60,41 +79,62 @@ theorem conditionalComposition
 
 theorem fourEvidenceComposes
     (D : DigestModel) (P : Protocol)
-    (τ1 τ2 τ3 : TransitionCertificate)
+    (τ1 : Option TransitionCertificate1)
+    (τ2 : Option TransitionCertificate2)
+    (τ3 : Option TransitionCertificate3)
     (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
     (hChecks : Composable D P τ1 τ2 τ3 x0 x1 x2 x3) :
     GlobalSupport P x0 x1 x2 x3 := by
   exact conditionalComposition D P τ1 τ2 τ3 x0 x1 x2 x3
     (compositionObligations D P) hChecks
 
-theorem missingCertificateCannotCompose
+theorem missingCertificate1CannotCompose
     (D : DigestModel) (P : Protocol)
-    (τ1 τ2 τ3 : TransitionCertificate)
-    (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
-    (hMissing : τ1.present = false) :
-    ¬CompositionWitness D P τ1 τ2 τ3 x0 x1 x2 x3 := by
+    (τ2 : Option TransitionCertificate2)
+    (τ3 : Option TransitionCertificate3)
+    (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3) :
+    ¬Composable D P none τ2 τ3 x0 x1 x2 x3 := by
   intro h
-  have hcheck := h.checks.1
-  have hgate := (of_decide_eq_true hcheck).1.1
-  rw [hMissing] at hgate
-  contradiction
+  simp [Composable, check1] at h
 
-theorem failedContractCannotCompose
+theorem missingCertificate2CannotCompose
     (D : DigestModel) (P : Protocol)
-    (τ1 τ2 τ3 : TransitionCertificate)
-    (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
-    (hBroken : ¬ContractRel2 x1 x2) :
-    ¬CompositionWitness D P τ1 τ2 τ3 x0 x1 x2 x3 := by
+    (τ1 : Option TransitionCertificate1)
+    (τ3 : Option TransitionCertificate3)
+    (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3) :
+    ¬Composable D P τ1 none τ3 x0 x1 x2 x3 := by
   intro h
-  exact hBroken (localSound2 τ2 x1 x2 h.checks.2.1)
+  simp [Composable, check2] at h
+
+theorem missingCertificate3CannotCompose
+    (D : DigestModel) (P : Protocol)
+    (τ1 : Option TransitionCertificate1)
+    (τ2 : Option TransitionCertificate2)
+    (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3) :
+    ¬Composable D P τ1 τ2 none x0 x1 x2 x3 := by
+  intro h
+  simp [Composable, check3] at h
+
+theorem failedAgreementCannotCompose
+    (D : DigestModel) (P : Protocol)
+    (τ1 : Option TransitionCertificate1)
+    (τ2 : Option TransitionCertificate2)
+    (τ3 : Option TransitionCertificate3)
+    (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
+    (hBroken : ¬AgreementRel2 x1 x2) :
+    ¬Composable D P τ1 τ2 τ3 x0 x1 x2 x3 := by
+  intro h
+  exact hBroken (localSound2 τ2 x1 x2 h.2.1)
 
 theorem brokenFidelityCannotCompose
     (D : DigestModel) (P : Protocol)
-    (τ1 τ2 τ3 : TransitionCertificate)
+    (τ1 : Option TransitionCertificate1)
+    (τ2 : Option TransitionCertificate2)
+    (τ3 : Option TransitionCertificate3)
     (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
     (hBroken : ¬FidelityRel3 x2 x3) :
-    ¬CompositionWitness D P τ1 τ2 τ3 x0 x1 x2 x3 := by
+    ¬Composable D P τ1 τ2 τ3 x0 x1 x2 x3 := by
   intro h
-  exact hBroken (fidelity3 D P τ3 x2 x3 h.checks.2.2)
+  exact hBroken (fidelity3 D P τ3 x2 x3 h.2.2)
 
 end P10Core.Proofs.Composition

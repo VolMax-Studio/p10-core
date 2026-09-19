@@ -1,18 +1,14 @@
-# GATE RESULT — P10-Core v0.2.0-composition (adversarial external gate)
+GATE RESULT — P10-Core v0.2.0-composition (adversarial external gate)
 
-- **Target Commit:** `b4aef60`
-- **Target Tag:** `v0.2.0-composition`
-- **Reviewer:** Claude (Adversarial External Gatekeeper)
-- **Date:** 2026-09-19
-- **Verdict:** `BLOCKED`
+Napomena: gejt izveštaj na engleskom (tehnički deliverable). Verdikt je na dnu.
 
 ---
 
-## Scope Actually Reviewable
+## Scope actually reviewable
 
-Received: `README.md`, `RELEASE_NOTES.md`, `AXIOM_AUDIT.md`, `P10Core.lean`, plus pasted Lean sources (`Instances/FourEvidence/Composition.lean` and `Proofs/Composition.lean`).
+Received: `README.md`, `RELEASE_NOTES.md`, `AXIOM_AUDIT.md`, `P10Core.lean` (69 bytes, two `import` lines), plus two pasted Lean sources — the `Instances/FourEvidence/Composition` layer and `Proofs/Composition`.
 
-**Not received in evaluation container:** `P10Core/Spec/*`, `P10Core/Model/Calculus.lean`, `Instances/FourEvidence/Checker.lean`, `Proofs/FourEvidence.lean`, `lakefile.*`, `lean-toolchain`, `lake-manifest.json`, standalone bundle `SHA256SUMS`. Every load-bearing identifier (`Supports`, `semantics`, `Truth_M`, `CheckCert`, `checkCert_sound`, `DigestModel`, `formalize`, `inspect`, `Claim`, `Evidence`, `Certificate`, `Verdict`) is defined in seed files.
+**Not received:** `P10Core/Spec/*`, `P10Core/Model/Calculus.lean`, `Instances/FourEvidence/Checker.lean`, `Proofs/FourEvidence.lean`, `lakefile.*`, `lean-toolchain`, `lake-manifest.json`, any `SHA256SUMS`. Every load-bearing identifier — `Supports`, `semantics`, `Truth_M`, `CheckCert`, `checkCert_sound`, `DigestModel`, `formalize`, `inspect`, `Claim`, `Evidence`, `Certificate`, `Verdict` — is defined in files that were not shipped. No Lean build was executed.
 
 ---
 
@@ -22,25 +18,25 @@ Received: `README.md`, `RELEASE_NOTES.md`, `AXIOM_AUDIT.md`, `P10Core.lean`, plu
 - Severity: BLOCKER · Class: reproducibility + claim-boundary
 - Location: artifact set as a whole
 - Claim affected: task items 3, 4, 7, 9, 10
-- Evidence: uploaded set lacked full seed dependencies. `Proofs/Composition.lean` line 24 calls `FourEvidence.checkCert_sound`, whose full definition was not in the reviewed container. Item 3 ("does not hide equivalent assumptions elsewhere") and Item 4 (`Truth_M` definition audit) cannot be fully discharged without the complete seed.
+- Evidence: `ls /mnt/user-data/uploads/` returns 4 files. `Proofs/Composition.lean` line 24 calls `FourEvidence.checkCert_sound`, whose statement I have never seen. Any hidden assumption in this release would be located precisely there — in the unseen seed, not in the composition layer. Item 3 ("does not hide equivalent assumptions elsewhere") is exactly the item this gap makes unanswerable. Item 4 likewise: `Truth_M` is syntactically absent from both reviewed files, but whether `Supports` or `semantics` are *defined* through it is not determinable.
 
 **C-02 — Toolchain pin and build are agent self-reports**
 - Severity: BLOCKER · Class: reproducibility
 - Location: `README.md` §Build — "Pinned toolchain: Lean 4.34.0"; `AXIOM_AUDIT.md` §Lean kernel report
-- Evidence: no `lean-toolchain`, no `lakefile`, no `lake-manifest.json` in the evaluated upload. The six `#print axioms` lines are transcribed text, not reproduced output in that container. An agent stating "`does not depend on any axioms`" is a claim, not proof, until the checker is run against a pinned toolchain.
+- Evidence: no `lean-toolchain`, no `lakefile`, no `lake-manifest.json` in the set. The six `#print axioms` lines are transcribed text, not reproduced output. Gate Check 1 and Check 9 apply verbatim: an agent stating "`does not depend on any axioms`" is a claim, not proof, until the checker is run against a pinned toolchain.
 
 **C-03 — Byte-identity claim published without a single digest**
 - Severity: BLOCKER · Class: reproducibility
 - Location: `AXIOM_AUDIT.md` §Frozen-seed verification
 - Claim affected: "compare byte-for-byte equal with the frozen seed"; "the full seed tree was hashed before and after implementation and its manifest did not change"
-- Evidence: the section asserts a hash comparison and then publishes no hash, no manifest, and no manifest path in the text. A byte-identity claim that carries no digest is unverifiable by construction. Minimal fix: publish `SHA256SUMS` for the seed tree at `v0.1.0-four-evidence` and at `v0.2.0-composition`, plus the diff command.
+- Evidence: the section asserts a hash comparison and then publishes no hash, no manifest, and no manifest path. A byte-identity claim that carries no digest is unverifiable by construction, and it is the one claim in the release that is trivially cheap to make verifiable. This is below the standard already met elsewhere in the project (`results_sha256`, `data_manifest.json`, SHA256SUMS). Minimal fix: publish `SHA256SUMS` for the seed tree at `v0.1.0-four-evidence` and at `v0.2.0-composition`, plus the diff command.
 
 **C-09 — Non-vacuity is undemonstrated at two independent points**
 - Severity: BLOCKER · Class: theorem-boundary (vacuity risk, unresolved)
 - Location: `Proofs/Composition.lean` — `fourEvidenceComposes`; `Instances/.../Composition.lean` — `Composable`
 - Claim affected: task item 1 ("is not vacuous")
 - Evidence (a): the release contains no `example`, no `#eval`, no witness exhibiting any tuple with `Composable D P τ1 τ2 τ3 x0 x1 x2 x3`. If `CheckCert` is never `true` on any input, `fourEvidenceComposes` is vacuously true and the release proves nothing.
-- Evidence (b), sharper: every main and adversarial theorem is universally quantified over `(D : DigestModel)`, and `AXIOM_AUDIT.md` states the residual premise is `DigestModel.injective : Function.Injective digest`. **No inhabitant of `DigestModel` is exhibited anywhere in the set.** If `digest` has a fixed-width codomain over an unbounded `Evidence` domain, injectivity is false by pigeonhole, `DigestModel` is empty, and all six theorems are vacuously true — including the three adversarial ones. Minimal fix: ship `example : DigestModel := …` and one positive `#eval check3 … = true` trace.
+- Evidence (b), sharper: every main and adversarial theorem is universally quantified over `(D : DigestModel)`, and `AXIOM_AUDIT.md` states the residual premise is `DigestModel.injective : Function.Injective digest`. **No inhabitant of `DigestModel` is exhibited anywhere in the set.** If `digest` has a fixed-width codomain over an unbounded `Evidence` domain, injectivity is false by pigeonhole, `DigestModel` is empty, and all six theorems are vacuously true — including the three adversarial ones. This is not a demonstrated break; it is an unresolved one, and per gate doctrine absence of a counterexample is not proof. Minimal fix: ship `example : DigestModel := …` and one positive `#eval check3 … = true` trace.
 
 ---
 
@@ -50,53 +46,61 @@ Received: `README.md`, `RELEASE_NOTES.md`, `AXIOM_AUDIT.md`, `P10Core.lean`, plu
 - Severity: MAJOR · Class: claim-boundary
 - Location: `Instances/.../Composition.lean` — `TransitionCertificate`, `transitionGate`, `check1/2/3`
 - Claim affected: README — "an explicit transition certificate with presence, contract, and fidelity flags"
-- Evidence: `transitionGate τ := τ.present = true ∧ τ.contractOK = true ∧ τ.fidelityOK = true`. Nothing connects `contractOK` to `ContractRelᵢ` or `fidelityOK` to `FidelityRelᵢ` — the relations are decided independently as separate conjuncts of `checkᵢ`. So the three booleans are free flags: an adversary sets them `true` at zero cost. The certificate carries no evidence; it is a gate flag wearing the word "certificate."
+- Evidence: `transitionGate τ := τ.present = true ∧ τ.contractOK = true ∧ τ.fidelityOK = true`. Nothing in the file connects `contractOK` to `ContractRelᵢ` or `fidelityOK` to `FidelityRelᵢ` — the relations are decided independently as separate conjuncts of `checkᵢ`. So the three booleans are free: an adversary sets them `true` at zero cost, and a materially correct chain is rejected if one is `false`. The certificate carries no evidence; it is a gate flag wearing the word "certificate."
 
 **C-05 — `missingCertificateCannotCompose` excludes a boolean, not a missing certificate**
 - Severity: MAJOR · Class: claim-boundary
 - Location: `Proofs/Composition.lean` — `missingCertificateCannotCompose`
 - Claim affected: README — "adversarial non-composition theorems for missing certificates"
-- Evidence: the hypothesis is `τ1.present = false` and the proof is `rw [hMissing]; contradiction` — it covers only `τ1` and only the `present` field. `τ2`, `τ3`, `contractOK`, and `fidelityOK` are uncovered.
+- Evidence: the hypothesis is `τ1.present = false` and the proof is `rw [hMissing]; contradiction` — it never touches certificate content, follows directly from C-04, and covers only `τ1` and only the `present` field. `τ2`, `τ3`, `contractOK`, and `fidelityOK` are uncovered. Item 5 passes on *form* (the theorems are not unrelated propositions) but the coverage is one instance per category, not the category.
 
 **C-06 — `ContractRel1/2` are function-agreement equations, not semantic contracts**
 - Severity: MAJOR · Class: claim-boundary
 - Location: `Instances/.../Composition.lean` — `ContractRel1`, `ContractRel2`
 - Claim affected: README — "a semantic `ContractRelᵢ`"
-- Evidence: `ContractRel1 x0 x1 := x1.target = formalize x0.claim`; `ContractRel2 x1 x2 := x2.checked = inspect x1.evidence`. These are syntactic equality against a designated total function. `LocalSound1/2` therefore establish only "the stage output equals `formalize`/`inspect` applied to the stage input" — adequacy of `formalize` is neither stated nor proved. Suggested rename: `AgreementRelᵢ`.
+- Evidence: `ContractRel1 x0 x1 := x1.target = formalize x0.claim`; `ContractRel2 x1 x2 := x2.checked = inspect x1.evidence`. These are decidable precisely because they are syntactic equality against a designated total function. `LocalSound1/2` therefore establish only "the stage output equals `formalize`/`inspect` applied to the stage input" — adequacy of `formalize` is neither stated nor proved. The claim → formal-statement transition is the epistemically load-bearing one in P10, and it is exactly the one carrying no semantic content here. The theorems are true as stated; the word "semantic" is not. Suggested rename: `AgreementRelᵢ`.
 
 **C-07 — Stages 1 and 2 do not constrain the conclusion**
 - Severity: MAJOR · Class: claim-boundary
 - Location: `Instances/.../Composition.lean` — `ContractRel3`, `GlobalSupport.protocolSupport`; `check3`
 - Claim affected: README — "bounded four-stage, three-transition typed chain"
-- Evidence: `ContractRel3 P x3` is unary in stages — it ignores `x2` entirely, unlike `ContractRel1/2`. `CheckCert D P x3.claim x3.evidence x3.certificate x3.verdict` never reads `target` or `checked`. `GlobalSupport.protocolSupport` is literally `h.local3`. Net: the entire content of `conditionalComposition` beyond the frozen seed theorem is two `Eq.trans` chains transporting `claim` and `evidence` from `x3` back to `x0`. The verdict is asserted at the endpoint and endpoint identity is carried back; it is not carried *through* stages 1 and 2. `localSound3` and `fidelity3` both bind `τ` and `x2` and then use neither in the conclusion.
+- Evidence: `ContractRel3 P x3` is unary in stages — it ignores `x2` entirely, unlike `ContractRel1/2`. `CheckCert D P x3.claim x3.evidence x3.certificate x3.verdict` never reads `target` or `checked`. `GlobalSupport.protocolSupport` is literally `h.local3`. Net: the entire content of `conditionalComposition` beyond the frozen seed theorem is two `Eq.trans` chains transporting `claim` and `evidence` from `x3` back to `x0`. The verdict is asserted at the endpoint and endpoint identity is carried back; it is not carried *through* stages 1 and 2. `localSound3` and `fidelity3` both bind `τ` and `x2` and then use neither in the conclusion, which is the visible symptom.
 
 **C-08 — The three negative theorems are stated weaker than their own proofs support**
 - Severity: MAJOR · Class: theorem-statement-weaker-than-claim
 - Location: `Proofs/Composition.lean` — all three adversarial theorems
-- Evidence: each concludes `¬CompositionWitness …`, where `CompositionWitness` is `checks ∧ global`. All three proofs use only `h.checks.1`, `h.checks.2.1`, `h.checks.2.2` — never `h.global`. They therefore prove the strictly stronger `¬Composable …`. Minimal fix: restate with `Composable` as the negated hypothesis.
+- Evidence: each concludes `¬CompositionWitness …`, where `CompositionWitness` is `checks ∧ global`. All three proofs use only `h.checks.1`, `h.checks.2.1`, `h.checks.2.2` — never `h.global`. They therefore prove the strictly stronger `¬Composable …`. Since `¬(A ∧ B)` is weaker than `¬A`, the published statements understate what was proved, and "cannot compose" reads stronger than what is literally written. Minimal fix: restate with `Composable` as the negated hypothesis; the proofs go through unchanged.
 
 **C-10 — Axiom scan is narrower than the audit's own method**
 - Severity: MINOR · Class: reproducibility
 - Location: `AXIOM_AUDIT.md` §Lean kernel report
-- Evidence: `#print axioms` is published for six theorems but not for `localSound1..3`, `fidelity1..3`, or `compositionObligations`. Substantively covered transitively via `fourEvidenceComposes` `[propext, Quot.sound]`, so no gap in fact; a gap in the audit documentation.
+- Evidence: `#print axioms` is published for six theorems but not for `localSound1..3`, `fidelity1..3`, or `compositionObligations` — the six load-bearing obligations. Substantively covered transitively via `fourEvidenceComposes` `[propext, Quot.sound]`, so no gap in fact; a gap in the audit as stated.
 
 **C-11 — File→path mapping is not established**
 - Severity: MINOR · Class: documentation/provenance
-- Evidence: provenance defect in submission bundle.
+- Evidence: the path `/mnt/user-data/uploads/P10Core.lean` holds 69 bytes (`import P10Core.Proofs.FourEvidence` / `import P10Core.Proofs.Composition`), while the instance-layer source arrived as pasted text carrying no path. No finding in this gate can be bound to a repository path with certainty. Under Check 1 that is a provenance defect in the submission, not in the code.
 
 ---
 
-## CLEAN (checked, held — within reviewed files)
+## CLEAN (checked, held — within the two files actually reviewed)
 
-- **Item 2 holds exactly:** `CompositionObligations D P` consists of the six intended obligations.
-- **Item 6 attack surface is clean:** `FidelityRel1/2/3` are plain structural equalities between fields of identical types. No index transport, no `cast`, no `Eq.mpr` coercion, no `HEq`, no unconstrained existential witness, no type-equality shortcut. Fidelity is not trivially satisfiable.
-- **Identity chains typecheck by inspection:** `x3.claim = x0.claim` and `x3.evidence = x0.evidence` via `Eq.trans`.
-- **No illicit `decide` on an undecidable proposition:** `ContractRel3` deliberately routes through `CheckCert`.
-- **No `sorry`, `admit`, or `axiom` in reviewed files.**
-- **`RELEASE_NOTES.md` "Not claimed" block is correctly scoped:** semantic truth, global P10 soundness, collision resistance, unbounded-chain composition are all genuinely not proved, and the release explicitly says so.
+- **Item 2 holds exactly.** `CompositionObligations D P := LocalSound1 ∧ LocalSound2 ∧ LocalSound3 D P ∧ Fidelity1 ∧ Fidelity2 ∧ Fidelity3 D P` — the six intended obligations, no more, no fewer. `compositionObligations` supplies all six by `⟨…⟩`; `fourEvidenceComposes` passes it to `conditionalComposition` with no additional hypothesis. Subject to C-01 for what sits inside `checkCert_sound`.
+- **Item 6's specific attack surface is clean.** `FidelityRel1/2/3` are plain structural equalities between fields of identical types. No index transport, no `cast`, no `Eq.mpr` coercion, no `HEq`, no unconstrained existential witness, no type-equality shortcut. Fidelity is not trivially satisfiable.
+- **The identity chains typecheck by inspection.** `fid3.1 : x3.claim = x2.claim`, `fid2.1 : x2.claim = x1.claim`, `fid1.1 : x1.claim = x0.claim` ⟹ `fid3.1.trans (fid2.1.trans fid1.1) : x3.claim = x0.claim`; same shape for evidence via `.2.1`/`.2`. Correct.
+- **No illicit `decide` on an undecidable proposition.** `ContractRel3` deliberately has no `Decidable` instance and `check3` routes through `CheckCert` instead. That restraint is the right call and was made.
+- **No `sorry`, `admit`, or `axiom`** in either reviewed file — confirmed by reading, not by trusting `AXIOM_AUDIT.md`. Covers 2 of ~8 modules.
+- **`RELEASE_NOTES.md` "Not claimed" block is correctly scoped** — semantic truth, global P10 soundness, collision resistance, unbounded-chain composition are all genuinely not proved, and the release says so. That block is the strongest piece of discipline in the set.
 
 ---
 
 ## VERDICT: **BLOCKED**
 
-Blocked on C-01, C-02, C-03, C-09. Nothing theorem-breaking found in reviewed code; block is based on incomplete bundle, unexecuted build/axiom audits, missing digest for byte-identity, and unproven non-vacuity.
+(Gate-vocabulary equivalent: BLOCKED. Maximum status any agent may self-assign remains "SPREMNO ZA GEJT"; this artifact is not there.)
+
+Blocked on C-01, C-02, C-03, C-09 — not on a demonstrated defect in the proofs. Nothing theorem-breaking was found in the code I could read. The block is that half the artifact was not shipped, the axiom report is untested transcription, the byte-identity claim carries no digest, and non-vacuity is asserted rather than witnessed.
+
+Unblocking set, in order: (1) ship the four missing modules + `lean-toolchain` + `lakefile` and let the gate run `lake build` and `#print axioms` itself; (2) publish `SHA256SUMS` for both tags; (3) ship a `DigestModel` inhabitant and one positive `Composable` witness. C-04 through C-08 are README/statement corrections that can ride the same commit — none require reproving anything.
+
+Gödel/Löb novelty deliberately not assessed, per instruction.
+
+Ako hoćeš ovo kao `GATE_v0.2.0-composition.md` za commit, reci — spremim fajl.

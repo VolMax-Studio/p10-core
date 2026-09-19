@@ -5,10 +5,6 @@ namespace P10Core.Instances.FourEvidence
 
 open P10Core.Spec P10Core.Model
 
-structure Digest where
-  value : Nat
-  deriving DecidableEq, Repr
-
 structure Claim where
   expected : Nat := 4
   operationalizable : Bool := true
@@ -18,6 +14,12 @@ structure Evidence where
   entries : List Bool
   externalReady : Bool := true
   admissible : Bool := true
+  deriving DecidableEq, Repr
+
+/-- A lossless synthetic digest for the bounded seed model.
+It is deliberately not a cryptographic hash. -/
+structure Digest where
+  evidence : Evidence
   deriving DecidableEq, Repr
 
 structure Protocol where
@@ -43,6 +45,13 @@ inductive Blocker where
 structure DigestModel where
   digest : Evidence → Digest
   injective : Function.Injective digest
+
+def concreteDigestModel : DigestModel where
+  digest := fun e => { evidence := e }
+  injective := by
+    intro a b h
+    cases h
+    rfl
 
 structure Certificate where
   protocolId : Nat

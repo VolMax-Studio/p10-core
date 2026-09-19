@@ -1,42 +1,40 @@
-# Axiom and trust audit — v0.2.0-composition
+# Axiom audit — v0.2.1-gatefix
 
-Audit target: Lean 4.34.0, `P10Core.Proofs.Composition`.
+Lean version: 4.34.0.
 
-## Source scan
+All `.lean` sources contain no `sorry`, `admit`, or user-declared `axiom`.
 
-All `.lean` sources were scanned. They contain no `sorry`, `admit`, or
-user-declared `axiom` command.
-
-## Lean kernel report
+## `#print axioms` results
 
 ```text
-'P10Core.Proofs.FourEvidence.checkCert_sound' depends on axioms: [propext, Quot.sound]
-'P10Core.Proofs.Composition.conditionalComposition' does not depend on any axioms
-'P10Core.Proofs.Composition.fourEvidenceComposes' depends on axioms: [propext, Quot.sound]
-'P10Core.Proofs.Composition.missingCertificateCannotCompose' does not depend on any axioms
-'P10Core.Proofs.Composition.failedContractCannotCompose' does not depend on any axioms
-'P10Core.Proofs.Composition.brokenFidelityCannotCompose' depends on axioms: [propext]
+checkCert_sound: [propext, Quot.sound]
+localSound1: [propext]
+localSound2: [propext]
+localSound3: [propext, Quot.sound]
+fidelity1: [propext]
+fidelity2: [propext]
+fidelity3: [propext]
+compositionObligations: [propext, Quot.sound]
+conditionalComposition: []
+fourEvidenceComposes: [propext, Quot.sound]
+missingCertificate1CannotCompose: [propext]
+missingCertificate2CannotCompose: [propext]
+missingCertificate3CannotCompose: [propext]
+failedAgreementCannotCompose: [propext]
+brokenFidelityCannotCompose: [propext]
+positiveComposable: []
+positiveGlobalSupport: [propext, Quot.sound]
 ```
 
-`conditionalComposition` itself is constructive once its six named obligations
-are supplied. `fourEvidenceComposes` discharges those obligations and inherits
-only the standard Lean foundations already reported by the unchanged seed
-theorem.
+These are Lean's surfaced foundational dependencies. No opaque local soundness
+assumption is used. `conditionalComposition` is constructive once the six named
+obligations are supplied; `compositionObligations` proves those obligations for
+this instance.
 
-## Explicit residual premise
+## Digest boundary
 
-`DigestModel.injective : Function.Injective digest` remains the explicit
-domain-specific premise. It is a structure field supplied to the theorem, not a
-global or hidden axiom. No new residual premise is introduced by composition.
-
-## Frozen-seed verification
-
-The original `P10Core/Proofs/FourEvidence.lean` and
-`P10Core/Model/Calculus.lean` compare byte-for-byte equal with the frozen seed.
-The full seed tree was hashed before and after implementation and its manifest
-did not change.
-
-## Claim boundary
-
-`GlobalSupport.protocolSupport` extracts the existing `Supports` judgement.
-Neither the type nor any composition theorem contains `Truth_M`.
+The old generic theorem still accepts `DigestModel.injective` explicitly. The
+positive model supplies `concreteDigestModel`, whose digest contains the full
+synthetic `Evidence` value and whose injectivity is proved. It demonstrates
+inhabitation and non-vacuity; it does **not** claim cryptographic collision
+resistance.

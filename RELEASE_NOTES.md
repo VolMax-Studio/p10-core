@@ -1,25 +1,21 @@
-# v0.2.0-composition
+# v0.2.1-gatefix
 
-Added:
+Status: **SPREMNO ZA PONOVNI GEJT** — not self-assigned PASS.
 
-- a bounded four-stage, three-transition typed chain;
-- explicit semantic contracts and fidelity relations per transition;
-- machine-checked `LocalSound1..3` and `Fidelity1..3` obligations;
-- conditional and fully discharged composition theorems;
-- protocol-only `GlobalSupport` with endpoint claim/evidence preservation;
-- adversarial non-composition theorems for missing certificates, failed
-  contracts, and broken fidelity;
-- an updated source and kernel-axiom audit.
+This release responds to Claude Gate 001 without modifying the frozen
+`v0.2.0-composition` artifact.
 
-Unchanged:
+Machine-checked additions:
 
-- the frozen FourEvidence checker theorem;
-- its digest-injectivity trust boundary;
-- all seed calculus and checker definitions.
+- inhabited concrete digest model;
+- positive executable composition witness;
+- load-bearing target → checked-result → final-certificate linkage;
+- witness-bearing transition certificates;
+- stronger `¬Composable` adversarial theorems;
+- full local-obligation axiom audit.
 
-Not claimed:
+Preserved boundaries:
 
-- semantic truth;
-- global P10 soundness;
-- cryptographic collision resistance;
-- unbounded-chain composition.
+- existing `checkCert_sound` theorem source unchanged;
+- `GlobalSupport` remains protocol support, not semantic truth;
+- no cryptographic, unbounded-composition, global-soundness, or adequacy claim.
