@@ -1,4 +1,4 @@
-# Axiom audit — v0.2.1-gatefix
+# Axiom audit — v0.2.2-gateclosure
 
 Lean version: 4.34.0.
 
@@ -24,17 +24,20 @@ failedAgreementCannotCompose: [propext]
 brokenFidelityCannotCompose: [propext]
 positiveComposable: []
 positiveGlobalSupport: [propext, Quot.sound]
+verifiedGlobalSupport_implies_originConditions: []
 ```
 
 These are Lean's surfaced foundational dependencies. No opaque local soundness
-assumption is used. `conditionalComposition` is constructive once the six named
-obligations are supplied; `compositionObligations` proves those obligations for
-this instance.
+assumption is used. `conditionalComposition` and `verifiedGlobalSupport_implies_originConditions`
+depend on **zero axioms**. `compositionObligations` proves the six named
+obligations for this instance using standard foundational Lean axioms (`propext`, `Quot.sound`).
 
-## Digest boundary
+## Digest boundary (G-01 Disclosure)
 
-The old generic theorem still accepts `DigestModel.injective` explicitly. The
+The generic theorem accepts `DigestModel.injective` explicitly. The
 positive model supplies `concreteDigestModel`, whose digest contains the full
-synthetic `Evidence` value and whose injectivity is proved. It demonstrates
-inhabitation and non-vacuity; it does **not** claim cryptographic collision
-resistance.
+synthetic `Evidence` value (`structure Digest where evidence : Evidence`) and
+whose injectivity is proved constructively without axioms (`by intro a b h; cases h; rfl`).
+It demonstrates mathematical inhabitation and non-vacuity for a lossless synthetic model;
+it does **not** claim cryptographic collision resistance.
+

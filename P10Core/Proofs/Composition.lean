@@ -137,4 +137,19 @@ theorem brokenFidelityCannotCompose
   intro h
   exact hBroken (fidelity3 D P τ3 x2 x3 h.2.2)
 
+theorem verifiedGlobalSupport_implies_originConditions
+    (P : Protocol) (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
+    (h : GlobalSupport P x0 x1 x2 x3) (hv : x3.verdict = Verdict.verified) :
+    verifiedSem (x0.claim, x0.evidence) := by
+  have hSupp : Supports (semantics P) x3.evidence x3.claim x3.certificate .verified := by
+    have pSupp := h.protocolSupport
+    rw [hv] at pSupp
+    exact pSupp
+  have hCond := FourEvidence.supports_verified_implies_conditions P x3.evidence x3.claim x3.certificate hSupp
+  have hcp := h.claimPreserved
+  have hep := h.evidencePreserved
+  rw [hcp, hep] at hCond
+  exact hCond
+
 end P10Core.Proofs.Composition
+

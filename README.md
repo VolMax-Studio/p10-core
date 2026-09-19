@@ -4,13 +4,14 @@
   <img src="assets/p10_core_banner.png" alt="P10-Core Verification Protocol" width="100%">
 </p>
 
-**Milestone:** `P10-Core / Composition Layer (v0.2.1-gatefix) — Machine-Checked Composition & Gate Remediation`  
-**Release Tag:** `v0.2.1-gatefix` (Predecessors: `v0.2.0-composition`, `v0.1.0-four-evidence`)  
+**Milestone:** `P10-Core / Composition Layer (v0.2.2-gateclosure) — Machine-Checked Composition & Gate Closure`  
+**Release Tag:** `v0.2.2-gateclosure` (Predecessors: `v0.2.1-gatefix`, `v0.2.0-composition`, `v0.1.0-four-evidence`)  
 **Author:** VolMax Studio Lab / Nestorov, Ivan (ORCID: [`0009-0006-7940-9539`](https://orcid.org/0009-0006-7940-9539))  
 **Contributors:** Ivan Nestorov, Sol, Astra, Ananke  
 **Toolchain:** Lean 4.34.0 (`leanprover/lean4:v4.34.0`), Lake 5.0.0  
 **License:** Apache 2.0  
-**Gate Status:** **SPREMNO ZA PONOVNI GEJT** (Adversarial Gate 002)  
+**Gate Status:** **READY FOR GATE CLOSURE CHECK** (Adversarial Gate 002 Remediation)  
+
 
 ---
 
@@ -93,7 +94,8 @@ Each transition $T_i$ enforces:
 - An executable local checker (`check1`, `check2`, `check3`);
 - A semantic preservation relation (`AgreementRel1`, `AgreementRel2`, `AgreementRel3`);
 - A claim/evidence fidelity relation (`FidelityRel1`, `FidelityRel2`, `FidelityRel3`);
-- A witness-bearing transition certificate (`TransitionCertificate1`, `TransitionCertificate2`, `TransitionCertificate3`) carrying concrete witnesses (`targetWitness`, `checkedWitness`, `certificateWitness`), completely eliminating inert boolean flags.
+- A witness-bearing transition certificate (`TransitionCertificate1`, `TransitionCertificate2`, `TransitionCertificate3`).  
+  *G-07 Disclosure:* Certificate witnesses (`targetWitness`, `checkedWitness`, `certificateWitness`) **gate acceptance and bind the certificate to the stage it certifies** (`check = false` upon mismatch); they serve as structural guards rather than redundant semantic premises in theorem conclusions.
 
 #### 2. Local Soundness & Fidelity Obligations
 All six local obligations are machine-checked:
@@ -106,7 +108,7 @@ All six local obligations are machine-checked:
   ```lean
   theorem conditionalComposition
       (D : DigestModel) (P : Protocol)
-      (τ1 : TransitionCertificate1) (τ2 : TransitionCertificate2) (τ3 : TransitionCertificate3)
+      (τ1 : Option TransitionCertificate1) (τ2 : Option TransitionCertificate2) (τ3 : Option TransitionCertificate3)
       (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
       (hObligations : CompositionObligations D P)
       (hChecks : Composable D P τ1 τ2 τ3 x0 x1 x2 x3) :
@@ -117,13 +119,22 @@ All six local obligations are machine-checked:
   ```lean
   theorem fourEvidenceComposes
       (D : DigestModel) (P : Protocol)
-      (τ1 : TransitionCertificate1) (τ2 : TransitionCertificate2) (τ3 : TransitionCertificate3)
+      (τ1 : Option TransitionCertificate1) (τ2 : Option TransitionCertificate2) (τ3 : Option TransitionCertificate3)
       (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
       (hChecks : Composable D P τ1 τ2 τ3 x0 x1 x2 x3) :
       GlobalSupport P x0 x1 x2 x3
   ```
-- **Terminal Protocol Support:**
-  `GlobalSupport.protocolSupport` extracts the exact declarative $\mathrm{Supports}$ judgement. It contains **no $\mathrm{Truth}_M$ predicate** and makes no claim of metaphysical truth.
+- **Terminal Protocol Support & Origin Conditions (Promoted Theorem):**
+  ```lean
+  theorem verifiedGlobalSupport_implies_originConditions
+      (P : Protocol) (x0 : Stage0) (x1 : Stage1) (x2 : Stage2) (x3 : Stage3)
+      (h : GlobalSupport P x0 x1 x2 x3) (hv : x3.verdict = Verdict.verified) :
+      verifiedSem (x0.claim, x0.evidence)
+  ```
+  *(Kernel report: depends on **zero axioms**).*  
+  When a composed pipeline legitimately concludes with `Verified`, the empirical condition `verifiedSem` is mathematically guaranteed to hold on **Stage 0's original claim and evidence**.
+- **Epistemic Meaning of `GlobalSupport` (G-05 Disclosure):**  
+  `GlobalSupport` means that the protocol adjudication procedure has executed soundly and is fully justified under the frozen rules for the given verdict. It does **not** assert that the claim is verified: `GlobalSupport` legitimately and soundly holds when the verdict is `NotDemonstrated`, `UnfalsifiableAsStated`, or `Deferred`. The protocol contains **no $\mathrm{Truth}_M$ predicate**.
 
 #### 4. Adversarial Non-Composition Theorems
 Negative theorems are rigorously strengthened to directly refute `Composable`:
@@ -133,12 +144,19 @@ Negative theorems are rigorously strengthened to directly refute `Composable`:
 - **`failedAgreementCannotCompose`:** If intermediate agreement $\neg\mathrm{AgreementRel2}$ fails, $\neg\mathrm{Composable}$.
 - **`brokenFidelityCannotCompose`:** If claim/evidence fidelity $\neg\mathrm{FidelityRel3}$ is broken, $\neg\mathrm{Composable}$.
 
-#### 5. Concrete Inhabitation & Positive Executable Witnesses
-To definitively refute vacuous truth:
-- **`concreteDigestModel`:** Inhabited model with proven injectivity (`fun {e1 e2} h => by cases h; rfl`).
-- **`positiveComposable`:** Explicit constructive term satisfying `Composable` (depends on **0 axioms**).
+#### 5. Concrete Inhabitation & Non-Vacuity Witnesses
+- **`concreteDigestModel`:** Inhabited model with proven injectivity (`fun {e1 e2} h => by cases h; rfl`).  
+  *G-01 Disclosure:* The synthetic `Digest` structure is a lossless representation (`evidence : Evidence`) demonstrating mathematical non-vacuity and inhabitation; it does **not** model cryptographic hash compression or collision resistance.
+- **`positiveComposable`:** Explicit constructive term satisfying `Composable` (depends on **zero axioms**).
 - **`positiveGlobalSupport`:** Discharged global support witness.
 - **Three Executable Checks:** `#eval check1`, `#eval check2`, `#eval check3` all evaluate to `true` at compile time.
+
+#### 6. Synthetic Instance Disclosure (G-04)
+The `FourEvidence` formalization is a **synthetic bounded instance** designed to establish mathematical checker-soundness and composition, rather than a full empirical instantiation of all generic P10 predicates:
+- `runCompleted := fun _ _ => True` and `checksSucceeded := fun _ _ => True` are trivially satisfied.
+- `evaluable` and `operationalizable` coincide (`fun c => c.operationalizable`).
+- `noProtocolFault c e := e.admissible = true` is implied by the preflight check.
+
 
 ---
 
@@ -152,6 +170,7 @@ As audited in [`AXIOM_AUDIT.md`](AXIOM_AUDIT.md):
 - **Kernel Axiom Report:**
   ```text
   'P10Core.Proofs.Composition.conditionalComposition' does not depend on any axioms
+  'P10Core.Proofs.Composition.verifiedGlobalSupport_implies_originConditions' does not depend on any axioms
   'P10Core.Proofs.PositiveWitness.positiveComposable' does not depend on any axioms
   'P10Core.Proofs.FourEvidence.checkCert_sound' depends on axioms: [propext, Quot.sound]
   'P10Core.Proofs.Composition.fourEvidenceComposes' depends on axioms: [propext, Quot.sound]

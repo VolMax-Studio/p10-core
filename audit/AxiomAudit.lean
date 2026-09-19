@@ -17,3 +17,4 @@ import P10Core.Proofs.PositiveWitness
 #print axioms P10Core.Proofs.Composition.brokenFidelityCannotCompose
 #print axioms P10Core.Proofs.PositiveWitness.positiveComposable
 #print axioms P10Core.Proofs.PositiveWitness.positiveGlobalSupport
+#print axioms P10Core.Proofs.Composition.verifiedGlobalSupport_implies_originConditions
