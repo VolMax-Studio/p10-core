@@ -1,0 +1,6 @@
+name = "p10_core"
+version = "0.1.0"
+defaultTargets = ["P10Core"]
+
+[[lean_lib]]
+name = "P10Core"
