@@ -31,6 +31,8 @@ fi
 lake env lean audit/AxiomAudit.lean
 
 # Run adversarial gate probe suite
+lake env lean reviews/GateProbe_CLAUDE_002_original.lean
+lake env lean reviews/GateProbeB.lean
 lake env lean reviews/GateProbe.lean
 
 # Check release manifest

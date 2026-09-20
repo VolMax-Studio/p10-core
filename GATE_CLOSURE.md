@@ -17,6 +17,8 @@
 | **G-05** | `GlobalSupport` semantics & abstention | **DISCLOSED & DEMONSTRATED** | `README.md` (§3.Layer2.3), `reviews/GateProbe.lean` (`probeA`) |
 | **G-06** | Origin condition theorem promotion (`probeF`) | **CLOSED** | `P10Core/Proofs/Composition.lean` (`verifiedGlobalSupport_implies_originConditions`) |
 | **G-07** | Certificate witness gating vs conclusion | **DISCLOSED** | `README.md` (§3.Layer2.1), `reviews/GateProbe.lean` (`probeD`, `probeE`) |
+| **CLOSE-02** | Frozen baseline archive immutability | **CLOSED** | `baselines/P10-Core-v0.2.0-composition.zip` (`a86501aab0f3...`) |
+| **CLOSE-03** | Adversarial probe suite bytes & probe B restoration | **CLOSED** | `reviews/GateProbe_CLAUDE_002_original.lean`, `reviews/GateProbeB.lean` |
 
 ---
 
@@ -31,10 +33,12 @@
 - **Manifest Provenance:** Following doctrine Check 6, the archive is **not modified in place**. The historical `BASELINE_MANIFEST.sha256` inside the zip is noted as a mislabelled v0.1.0 snapshot; the canonical, repo-relative manifest for the v0.2.0 predecessor tree is carried externally in [`manifests/SHA256SUMS_v0.2.0-composition`](manifests/SHA256SUMS_v0.2.0-composition).
 
 ### GOV-01: Governance & Chain of Authority ($H$)
-- **Correction:** In accordance with P10 formal architecture, terminal ratification $H$ and tagging/merging to `main` is strictly reserved for the human ratifier (Ivan). Agent actions are strictly bounded to candidate preparation under status **`SPREMNO ZA GEJT` / `READY FOR GATE CLOSURE CHECK`**. Premature git push/tagging is retracted and candidate deliverables are packaged for external gate evaluation prior to human ratification.
+- **Correction:** In accordance with P10 formal architecture, terminal ratification $H$ and tagging/merging to `main` is strictly reserved for the human ratifier (Ivan). Agent actions are strictly bounded to candidate preparation under status **`SPREMNO ZA GEJT` / `READY FOR GATE CLOSURE CHECK`**. Premature git push/tagging was retracted, and candidate deliverables are packaged for external gate evaluation prior to human ratification.
 
-### CLOSE-03: Adversarial Probe Lineage
-- **Traceability:** Claude's original probe suite has digest `2427da6ec2cd545baa541885929782d5601130db9eba4e9a3268a763e401495e`. The file [`reviews/GateProbe.lean`](reviews/GateProbe.lean) implements probes A through F reconstructed directly from Claude's specifications, compiling clean (`exit 0`). The exact probe text can be swapped byte-for-byte upon provision.
+### CLOSE-03: Adversarial Probe Lineage & Restored Probe B
+- **Byte-Exact Delivery:** Shipped Claude's original verbatim probe file as [`reviews/GateProbe_CLAUDE_002_original.lean`](reviews/GateProbe_CLAUDE_002_original.lean) matching exact digest `2427da6ec2cd545baa541885929782d5601130db9eba4e9a3268a763e401495e`.
+- **Restored Probe B:** Shipped restored Probe B (testing forged `.verified` certificate over non-supporting evidence, refuting composition) as [`reviews/GateProbeB.lean`](reviews/GateProbeB.lean) matching exact digest `3c41bd86f905fec1ea3175c2e1878e573bd32b8681e61b4a9480b37aab9f1310`.
+- **Verification:** Both compile cleanly (`exit 0`) against the built library via `lake env lean`.
 
 ### G-04: Collapsed Semantics Disclosure
 - `README.md` explicitly discloses the 4 collapsed/redundant predicates of the synthetic `FourEvidence` instance:
