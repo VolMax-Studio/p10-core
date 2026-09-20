@@ -26,10 +26,15 @@
 - **Fact:** The synthetic `Digest` structure was changed from `value : Nat` to `evidence : Evidence` to allow a constructive, machine-checked injectivity proof (`fun {e1 e2} h => by cases h; rfl`) without asserting an unverified cryptographic collision-resistance axiom.
 - **Documentation:** A formal Parametric Changelog table is published in `GATE_RESPONSE.md`. `README.md` and `AXIOM_AUDIT.md` explicitly disclose that the digest in this instance is a lossless mathematical wrapper demonstrating non-vacuity and inhabitation; no physical cryptographic hash compression is claimed.
 
-### G-02: Baseline Manifest Regeneration
-- `BASELINE_MANIFEST.sha256` inside `baselines/P10-Core-v0.2.0-composition.zip` was completely regenerated with repository-relative paths covering all 15 predecessor files.
-- Clean execution: `sha256sum -c BASELINE_MANIFEST.sha256` inside the baseline directory succeeds with **15/15 OK**.
-- Predecessor archive SHA-256 is updated in `baselines/P10-Core-v0.2.0-composition.zip.sha256`.
+### G-02 & CLOSE-02: Predecessor Archive Immutability
+- **Resolution:** The predecessor archive [`baselines/P10-Core-v0.2.0-composition.zip`](baselines/P10-Core-v0.2.0-composition.zip) is strictly restored to its original, immutable byte-exact state (`a86501aab0f35d055087d5793b897260635b441fb51d12dc6d99cd0229a0fc89`), matching `manifests/SHA256SUMS_v0.2.1-gatefix`.
+- **Manifest Provenance:** Following doctrine Check 6, the archive is **not modified in place**. The historical `BASELINE_MANIFEST.sha256` inside the zip is noted as a mislabelled v0.1.0 snapshot; the canonical, repo-relative manifest for the v0.2.0 predecessor tree is carried externally in [`manifests/SHA256SUMS_v0.2.0-composition`](manifests/SHA256SUMS_v0.2.0-composition).
+
+### GOV-01: Governance & Chain of Authority ($H$)
+- **Correction:** In accordance with P10 formal architecture, terminal ratification $H$ and tagging/merging to `main` is strictly reserved for the human ratifier (Ivan). Agent actions are strictly bounded to candidate preparation under status **`SPREMNO ZA GEJT` / `READY FOR GATE CLOSURE CHECK`**. Premature git push/tagging is retracted and candidate deliverables are packaged for external gate evaluation prior to human ratification.
+
+### CLOSE-03: Adversarial Probe Lineage
+- **Traceability:** Claude's original probe suite has digest `2427da6ec2cd545baa541885929782d5601130db9eba4e9a3268a763e401495e`. The file [`reviews/GateProbe.lean`](reviews/GateProbe.lean) implements probes A through F reconstructed directly from Claude's specifications, compiling clean (`exit 0`). The exact probe text can be swapped byte-for-byte upon provision.
 
 ### G-04: Collapsed Semantics Disclosure
 - `README.md` explicitly discloses the 4 collapsed/redundant predicates of the synthetic `FourEvidence` instance:
