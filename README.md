@@ -35,6 +35,7 @@ A positive verification indicates that an admissible evidence bundle $e$, evalua
 - **`p10-core` = What P10 is:** The specification, formal model, mechanized proofs, and reference semantics of the P10 protocol family.
 - **`p10-audit-p10-s1` = Empirical audit evidence:** A separate, historically sealed repository containing the pre-registration, execution traces (`run-001`), and final ratification of an empirical audit conducted on `p10-core` at `v0.2.2-gateclosure`.
 - The empirical lessons from S1 (eliminating Step 5 human interpretive discretion, formalizing witness classification, separating checker failures from substantive violations, and mechanizing the limitation calculus) directly informed the design of **S2** in `p10-core`.
+- **Audit Scope Demarcation:** The ratified S1 verdict `VerifiedWithLimitations` applies exclusively to `v0.2.2-gateclosure` (`419175726025f2586dbb65ad92ec8812628880b5`). `v0.3.0-s2-freeze` is frozen and machine-checked at its stated theorem boundary, but has not undergone an S2 empirical audit.
 - Future empirical audits of S2 will be instantiated in dedicated audit repositories (e.g. `p10-audit-p10-s2`) targeting the frozen `p10-core@fa7878a...` commit.
 
 > **Frozen Scope (v0.3.0):** The machine-checked S2 witness-aggregation and adjudication semantics at commit `fa7878a538f56ee9b3c8008ca71e93c04c69ecf4`. The freeze does not assert correctness of external evidence acquisition, cryptographic implementations, network sources, or domain-specific empirical checkers beyond their separately recorded execution evidence.
