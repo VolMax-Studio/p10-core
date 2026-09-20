@@ -19,7 +19,7 @@ def runProfile {E : Type} (p : DomainProfile E) (e : E) : TerminalOutcome :=
 /-- Domain Profile Extensionality Theorem:
     Any two profiles or runs that yield an identical normalized `DecisionView`
     deterministically produce the identical terminal outcome under S2 semantics,
-    proving domain-independence of the frozen adjudication kernel. -/
+    proving domain-source invariance conditional on an equal normalized DecisionView. -/
 theorem profile_extensionality {E₁ E₂ : Type}
     (p₁ : DomainProfile E₁) (p₂ : DomainProfile E₂)
     (e₁ : E₁) (e₂ : E₂)

@@ -9,7 +9,7 @@
 **Frozen Semantic Commit:** `fa7878a538f56ee9b3c8008ca71e93c04c69ecf4`  
 **Status:** $\boxed{\textbf{PUBLIC / FROZEN}}$  
 **Author:** VolMax Studio Lab / Nestorov, Ivan (ORCID: [`0009-0006-7940-9539`](https://orcid.org/0009-0006-7940-9539))  
-**Contributors:** Ivan Nestorov, Sol, Astra, Ananke  
+**Contributors:** Ivan Nestorov, Sol, Astra, Fable, Opus, Ananke  
 **Toolchain:** Lean 4.34.0 (`leanprover/lean4:v4.34.0`), Lake 5.0.0  
 **License:** Apache 2.0  
 **Predecessor Milestones:** `v0.2.2-gateclosure`, `v0.2.1-gatefix`, `v0.2.0-composition`, `v0.1.0-four-evidence`  
