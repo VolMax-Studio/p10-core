@@ -1,5 +1,5 @@
 name = "p10_core"
-version = "0.2.1-gatefix"
+version = "0.3.0"
 defaultTargets = ["P10Core"]
 
 [[lean_lib]]

@@ -202,7 +202,7 @@ def testDecisionView (obs : List EvalStatus) : DecisionView :=
     hasNonBlockingLimitation := false,
     admissibleNovelFinding := false }
 
-/-- Independent expected-outcome precedence oracle for test DecisionViews -/
+/-- Exhaustive reference conformance oracle for test DecisionViews -/
 def expectedAdversarialOutcome (obs : List EvalStatus) : TerminalOutcome :=
   if obs.contains EvalStatus.checkerError then
     TerminalOutcome.protocolError S2ProtocolError.checkerFailure

@@ -329,5 +329,21 @@ Prior to freezing the S2 protocol specification, the core adjudication automaton
    $$\operatorname{EvalStatus} = \texttt{Violated} \not\implies \texttt{NotDemonstrated}$$
 3. **DecisionView Representation Invariance:**
    $$\operatorname{DecisionView}(P, E_1) = \operatorname{DecisionView}(P, E_2) \implies \operatorname{Adjudicate}(P, E_1) = \operatorname{Adjudicate}(P, E_2)$$
-4. **Adversarial Permutation Verification:**
-   Exhaustive test evaluation across all permutations of $\{\texttt{Satisfied}, \texttt{Violated}, \texttt{Missing}, \texttt{Blocked}\}$ (e.g. bounded $4^4 = 256$ cases) confirming zero unhandled states.
+4. **Adversarial Reference Conformance Verification:**
+   Exhaustive test evaluation across all permutations of $\{\texttt{Satisfied}, \texttt{Violated}, \texttt{Blocked}, \texttt{Missing}, \texttt{CheckerError}\}$:
+   - $5^4 = 625$ obligation vectors verified against the frozen reference conformance oracle;
+   - $80,000$ complete $\operatorname{DecisionView}$ state space permutations evaluated and verified against the reference oracle.
+
+---
+
+## 9. Formalization Boundary & Trusted External Layer
+
+The S2 witness-aggregation and adjudication core is machine-checked in Lean 4 with zero custom axioms.
+
+**Epistemic Boundary Statement:**  
+The Lean formalization mathematically certifies:
+1. The deterministic witness aggregation logic over abstract `WitnessClass` vectors;
+2. The total adjudication automaton $\operatorname{Next}(s)$ and precedence ladder over abstract `DecisionView` records;
+3. Demarcation soundness ensuring `Missing` never collapses into `NotVerified` and `Violated` never collapses into `NotDemonstrated`.
+
+Correctness of raw evidence acquisition from operating system filesystems, cryptographic hashing of external disk archives, network fetch validation, domain-specific admissibility predicates, and execution of empirical binary checkers remains outside this Lean theorem boundary and is governed by the frozen profile specification, cryptographic manifests, and execution evidence logs.
