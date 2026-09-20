@@ -1,7 +1,8 @@
 # P10-Core / Audit Semantics v0.3 — S2 Specification
 
 **Document Identifier:** `SPEC-P10-CORE-v0.3-S2`  
-**Revision:** `draft-4` (Pre-Freeze Architecture)  
+**Revision:** `draft-4-cleanup`  
+**Status:** $\boxed{\textbf{S2 FREEZE CANDIDATE — READY FOR FRESH-CLONE FREEZE RUN}}$  
 **Predecessor Lineage:**  
 - Seed: `P10-Core-v0.1.0-four-evidence` (Commit: `da2683ba7bfc7a8f97d6c62506a6c2abd2f0b27a`)  
 - Composition: `P10-Core-v0.2.2-gateclosure` (Commit: `419175726025f2586dbb65ad92ec8812628880b5`, Asset SHA-256: `96a7e126068d35d29776a785d6581ef07c12f66a52d4a850b8464bf96ac41c88`)  
@@ -35,7 +36,7 @@ Let $P$ be a frozen pre-registration protocol. The obligation space $\mathcal{O}
 $$\mathcal{O}(P) = \{o_1, o_2, \dots, o_n\}$$
 
 Every obligation $o \in \mathcal{O}(P)$ is a structured record:
-$$o = \langle \text{id},\, \text{scope},\, \text{admissibility\_predicate},\, \text{evaluator\_spec},\, \text{failure\_tag} \rangle$$
+$$o = \langle \text{id}, \text{scope}, \text{admissibility\_predicate}, \text{evaluator\_spec}, \text{failure\_tag} \rangle$$
 
 ### 2.2 Witness Classification Totality & CheckerError
 Let $E$ be an evidence bundle. An evidentiary witness $w \in E$ is admissible for obligation $o$ only if it is cryptographically bound to the target identity:
@@ -58,7 +59,7 @@ Totality of $\operatorname{Eval}(E, o)$ is achieved via strict, fail-closed prec
 3. **Operational Blockage Dominance:**
    $$\neg (\exists w \text{ violating}) \land (\exists w \in \mathcal{W}_{\text{adm}}(E, o) \text{ s.t. } \operatorname{Classify}(w, o) = \texttt{Blocked}) \implies \operatorname{Eval}(E, o) = \texttt{Blocked}$$
 4. **Unanimous Satisfaction:**
-   $$\mathcal{W}_{\text{adm}}(E, o) \neq \emptyset \land (\forall w \in \mathcal{W}_{\text{adm}}(E, o),\, \operatorname{Classify}(w, o) = \texttt{Satisfied}) \implies \operatorname{Eval}(E, o) = \texttt{Satisfied}$$
+   $$\mathcal{W}_{\text{adm}}(E, o) \neq \emptyset \land (\forall w \in \mathcal{W}_{\text{adm}}(E, o), \operatorname{Classify}(w, o) = \texttt{Satisfied}) \implies \operatorname{Eval}(E, o) = \texttt{Satisfied}$$
 5. **Missing Evidence:**
    $$\mathcal{W}_{\text{adm}}(E, o) = \emptyset \implies \operatorname{Eval}(E, o) = \texttt{Missing}$$
 
@@ -67,7 +68,7 @@ Thus, $\operatorname{Eval}(E, o) \in \{\texttt{Satisfied}, \texttt{Violated}, \t
 ### 2.3 Definition of Obligation-Based Completeness
 The predicate $\operatorname{EvidenceComplete}(P, E)$ asserts that no obligation lacks admissible evidence; it does not imply successful evaluation or substantive satisfaction:
 
-$$\boxed{\operatorname{EvidenceComplete}(P, E) \iff \forall o \in \mathcal{O}(P),\, \operatorname{Eval}(E, o) \neq \texttt{Missing}}$$
+$$\boxed{\operatorname{EvidenceComplete}(P, E) \iff \forall o \in \mathcal{O}(P), \operatorname{Eval}(E, o) \neq \texttt{Missing}}$$
 
 This strictly preserves the tri-part epistemic demarcation:
 $$\text{Missing evidence} \neq \text{checker failure} \neq \text{substantive violation}$$
@@ -93,15 +94,15 @@ The core kernel provides:
 ### 3.2 Concrete Profile: `P10-Lean-SelfAudit-S2`
 For Lean-based mathematical and software self-audits (such as `FourEvidence`), obligations are partitioned into six standardized profile classes:
 
-$$\mathcal{O}(P) = \mathcal{O}_{\text{integrity}} \cup \mathcal{O}_{\text{build}} \cup \mathcal{O}_{\text{axiom}} \cup \mathcal{O}_{\text{carrier}} \cup \mathcal{O}_{\text{demarcation}} \cup \mathcal{O}_{\text{closure}}$$
+$$\mathcal{O}(P) = \mathcal{O}_{\mathrm{integrity}} \cup \mathcal{O}_{\mathrm{build}} \cup \mathcal{O}_{\mathrm{axiom}} \cup \mathcal{O}_{\mathrm{carrier}} \cup \mathcal{O}_{\mathrm{demarcation}} \cup \mathcal{O}_{\mathrm{closure}}$$
 
 Where:
-- $\mathcal{O}_{\text{integrity}}$: Git commit match, manifest continuity ($M(c) = 1$), baseline archive digest invariant ($H(\text{base}) = h^*$).
-- $\mathcal{O}_{\text{build}}$: Toolchain version equality, zero exit code, compile-time evaluation ($\#\text{eval} \to \text{true}$).
-- $\mathcal{O}_{\text{axiom}}$: Kernel axiom transparency, empty axiom sets for designated theorems ($\operatorname{Axioms}(\theta) = \emptyset$).
-- $\mathcal{O}_{\text{carrier}}$: Verbatim textual presence of designated boundary statements ($B_1 \dots B_m$) in primary carrier documents.
-- $\mathcal{O}_{\text{demarcation}}$: Complete AST scan of target code confirming zero occurrences of forbidden symbols ($\mathrm{Truth}_M$, `sorry`, `admit`, user `axiom`).
-- $\mathcal{O}_{\text{closure}}$: External gate provenance closure and anti-circularity verification.
+- $\mathcal{O}_{\mathrm{integrity}}$: Git commit match, manifest continuity ($M(c) = 1$), baseline archive digest invariant ($H(\mathrm{base}) = h^*$).
+- $\mathcal{O}_{\mathrm{build}}$: Toolchain version equality, zero exit code, compile-time evaluation ($\#\mathrm{eval} \to \mathrm{true}$).
+- $\mathcal{O}_{\mathrm{axiom}}$: Kernel axiom transparency, empty axiom sets for designated theorems ($\operatorname{Axioms}(\theta) = \emptyset$).
+- $\mathcal{O}_{\mathrm{carrier}}$: Verbatim textual presence of designated boundary statements ($B_1 \dots B_m$) in primary carrier documents.
+- $\mathcal{O}_{\mathrm{demarcation}}$: Complete AST scan of target code confirming zero occurrences of forbidden symbols ($\mathrm{Truth}_M$, `sorry`, `admit`, user `axiom`).
+- $\mathcal{O}_{\mathrm{closure}}$: External gate provenance closure and anti-circularity verification.
 
 *Note:* Non-Lean audits (e.g. Battery ML, ENTSO-E power grid audits) instantiate distinct profile classes without modifying P10-Core semantics.
 
@@ -122,7 +123,7 @@ This eliminates duplicate evaluation engines: an F-condition fires if and only i
 ### 4.2 Unified Terminal Outcome Space $\Omega$
 The terminal outcome space $\Omega$ unifies protocol halts with formal audit verdicts:
 
-$$\Omega = \operatorname{ProtocolError}(\text{reason}) \;\uplus\; \mathcal{V}^*$$
+$$\Omega = \operatorname{ProtocolError}(\text{reason}) \uplus \mathcal{V}^*$$
 
 Where:
 $$\mathcal{V}^* = \{\texttt{Verified}, \texttt{VerifiedWithLimitations}, \texttt{NotVerified}, \texttt{NotDemonstrated}, \texttt{UnfalsifiableAsStated}, \texttt{Deferred}\}$$
@@ -148,7 +149,7 @@ $$\boxed{\operatorname{DecisionView}(P, E_1) = \operatorname{DecisionView}(P, E_
 ### 4.4 Automaton State Space and Totality
 Let $\mathcal{S}$ be the state of the adjudication automaton:
 
-$$\mathcal{S} = \langle \text{Phase},\, \mathcal{O}_{\text{pending}},\, \mathcal{F}_{\text{triggered}},\, \mathcal{L}_{\text{active}} \rangle$$
+$$\mathcal{S} = \langle \text{Phase}, \mathcal{O}_{\text{pending}}, \mathcal{F}_{\text{triggered}}, \mathcal{L}_{\text{active}} \rangle$$
 
 **Totality Condition:**
 For every reachable state $s \in \mathcal{S}$:
@@ -213,7 +214,7 @@ The preregistration must enumerate the closed registry of known, permissible lim
 $$\mathcal{L}^* = \{l_1, l_2, \dots, l_k\}$$
 
 To eliminate evaluator subjectivity, every registered limitation $l \in \mathcal{L}^*$ is typed with an explicit applicability checker and evidence rule:
-$$l = \langle \text{id},\, \text{scope},\, \text{applicability\_checker},\, \text{severity},\, \text{evidence\_rule} \rangle$$
+$$l = \langle \text{id}, \text{scope}, \text{applicability\_checker}, \text{severity}, \text{evidence\_rule} \rangle$$
 
 Where:
 $$\operatorname{Severity}(l) \in \{\texttt{NonBlocking}, \texttt{Blocking}\}$$
@@ -223,11 +224,11 @@ $$\operatorname{Applicable}(E, l) \in \{\texttt{True}, \texttt{False}\} \quad \t
 Given that Steps 1–5 have passed:
 
 1. **Pure Verification:**
-   $$\forall l \in \mathcal{L}^*,\, \neg\operatorname{Applicable}(E, l) \implies \boxed{\mathcal{V}^* = \texttt{Verified}}$$
+   $$\forall l \in \mathcal{L}^*, \neg\operatorname{Applicable}(E, l) \implies \boxed{\mathcal{V}^* = \texttt{Verified}}$$
 2. **Verification With Limitations:**
-   $$(\exists l \in \mathcal{L}^*,\, \operatorname{Applicable}(E, l)) \land (\forall l \in \mathcal{L}^*,\, \operatorname{Applicable}(E, l) \implies \operatorname{Severity}(l) = \texttt{NonBlocking}) \implies \boxed{\mathcal{V}^* = \texttt{VerifiedWithLimitations}}$$
+   $$(\exists l \in \mathcal{L}^*, \operatorname{Applicable}(E, l)) \land (\forall l \in \mathcal{L}^*, \operatorname{Applicable}(E, l) \implies \operatorname{Severity}(l) = \texttt{NonBlocking}) \implies \boxed{\mathcal{V}^* = \texttt{VerifiedWithLimitations}}$$
 3. **Blocking Limitation Breach:**
-   $$(\exists l \in \mathcal{L}^*,\, \operatorname{Applicable}(E, l) \land \operatorname{Severity}(l) = \texttt{Blocking}) \implies \boxed{\mathcal{V}^* = \texttt{NotVerified}}$$
+   $$(\exists l \in \mathcal{L}^*, \operatorname{Applicable}(E, l) \land \operatorname{Severity}(l) = \texttt{Blocking}) \implies \boxed{\mathcal{V}^* = \texttt{NotVerified}}$$
 
 ### 5.3 Admissible Novel Findings Rule
 To prevent "Deferred by mere assertion," an evaluator cannot stall issuance by raising arbitrary ungrounded claims. A novel finding $f$ alters the automaton flow if and only if it is admissible:
@@ -273,7 +274,7 @@ Derived directly from the procedural execution of S1 and the blind conformity tr
 
 1. **Canonical Identity Tuple Doctrine:**  
    Target and audit deliverables are identified by an immutable tuple:
-   $$\operatorname{Identity} = \langle \text{Repository},\, \text{CommitObjectID},\, \text{ArtifactSHA256} \rangle$$
+   $$\operatorname{Identity} = \langle \text{Repository}, \text{CommitObjectID}, \text{ArtifactSHA256} \rangle$$
    The commit object ID binds the Git tree and history; the SHA-256 digest binds the distributed archive; tags and release names are mutable navigation aliases.
 2. **Generated-Build Hygiene Doctrine:**  
    Regenerable build outputs (`.lake/`, `.olean`, `.c`, `.trace`) MUST NOT be treated as canonical source evidence and SHOULD be excluded from evidentiary repositories unless explicitly preregistered as target deliverables. Admissibility requires verifying clean-room rebuildability from pinned manifests and toolchain specifications.
@@ -281,40 +282,41 @@ Derived directly from the procedural execution of S1 and the blind conformity tr
    A blind conformity bundle must be **outcome-redacted but obligation-complete with respect to the entire frozen target tuple $A^*$**, not merely its archive component. It must strictly exclude the *issued audit report*, *audit ratification record*, and summary PASS matrices to prevent verdict leakage. However, it MUST retain the complete target candidate tuple $A^*$ (including candidate documentation and target-level historical ratifications) and all execution traces necessary to evaluate every obligation in $\mathcal{O}(P)$.
 4. **Comprehensive Machine-Readable Decision Trace Doctrine:**  
    Every audit execution must emit a structured `decision_trace.json` recording the complete path of the adjudication automaton:
-```json
-{
-  "protocol_id": "P10-AUDIT-P10-S2",
-  "target_identity": {
-    "repo": "VolMax-Studio/p10-core",
-    "commit": "419175726025f2586dbb65ad92ec8812628880b5",
-    "asset_sha256": "96a7e126068d35d29776a785d6581ef07c12f66a52d4a850b8464bf96ac41c88"
-  },
-  "protocol_integrity": {"status": "PASS", "faults_detected": []},
-  "claim_falsifiability": {"status": "FALSIFIABLE"},
-  "obligations": [
-    {
-      "id": "O_BUILD_01",
-      "checker_id": "lake_build_v1",
-      "evidence_hashes": ["f81cb8dd..."],
-      "eval_status": "Satisfied",
-      "reason_code": "RC_ZERO_EXIT"
-    }
-  ],
-  "failures": [],
-  "blockers": [],
-  "limitations": [
-    {
-      "id": "L_HORIZON_N4",
-      "registered_severity": "NonBlocking",
-      "applicable": true,
-      "evidence_witness": "README.md:189"
-    }
-  ],
-  "novel_findings": [],
-  "precedence_path": ["Step1_Integrity", "Step2_Failures", "Step3_Falsifiability", "Step4_Blockers", "Step5_Completeness", "Step6_Limitations"],
-  "terminal_outcome": "VerifiedWithLimitations"
-}
-```
+
+   ```json
+   {
+     "protocol_id": "P10-AUDIT-P10-S2",
+     "target_identity": {
+       "repo": "VolMax-Studio/p10-core",
+       "commit": "419175726025f2586dbb65ad92ec8812628880b5",
+       "asset_sha256": "96a7e126068d35d29776a785d6581ef07c12f66a52d4a850b8464bf96ac41c88"
+     },
+     "protocol_integrity": {"status": "PASS", "faults_detected": []},
+     "claim_falsifiability": {"status": "FALSIFIABLE"},
+     "obligations": [
+       {
+         "id": "O_BUILD_01",
+         "checker_id": "lake_build_v1",
+         "evidence_hashes": ["f81cb8dd..."],
+         "eval_status": "Satisfied",
+         "reason_code": "RC_ZERO_EXIT"
+       }
+     ],
+     "failures": [],
+     "blockers": [],
+     "limitations": [
+       {
+         "id": "L_HORIZON_N4",
+         "registered_severity": "NonBlocking",
+         "applicable": true,
+         "evidence_witness": "README.md:189"
+       }
+     ],
+     "novel_findings": [],
+     "precedence_path": ["Step1_Integrity", "Step2_Failures", "Step3_Falsifiability", "Step4_Blockers", "Step5_Completeness", "Step6_Limitations"],
+     "terminal_outcome": "VerifiedWithLimitations"
+   }
+   ```
 
 ---
 
@@ -323,7 +325,7 @@ Derived directly from the procedural execution of S1 and the blind conformity tr
 Prior to freezing the S2 protocol specification, the core adjudication automaton must be modeled in Lean 4 and mechanically verified against the following four meta-theorems:
 
 1. **Totality & Determinism:**
-   $$\forall s \in \mathcal{S},\, \exists! \omega \in \Omega \text{ s.t. } \operatorname{Adjudicate}(s) = \omega$$
+   $$\forall s \in \mathcal{S}, \exists! \omega \in \Omega \text{ s.t. } \operatorname{Adjudicate}(s) = \omega$$
 2. **Demarcation Soundness:**
    $$\operatorname{EvalStatus} = \texttt{Missing} \not\implies \texttt{NotVerified}$$
    $$\operatorname{EvalStatus} = \texttt{Violated} \not\implies \texttt{NotDemonstrated}$$
@@ -331,14 +333,15 @@ Prior to freezing the S2 protocol specification, the core adjudication automaton
    $$\operatorname{DecisionView}(P, E_1) = \operatorname{DecisionView}(P, E_2) \implies \operatorname{Adjudicate}(P, E_1) = \operatorname{Adjudicate}(P, E_2)$$
 4. **Adversarial Reference Conformance Verification:**
    Exhaustive test evaluation across all permutations of $\{\texttt{Satisfied}, \texttt{Violated}, \texttt{Blocked}, \texttt{Missing}, \texttt{CheckerError}\}$:
-   - $5^4 = 625$ obligation vectors verified against the frozen reference conformance oracle;
-   - $80,000$ complete $\operatorname{DecisionView}$ state space permutations evaluated and verified against the reference oracle.
+   - $5^4 = 625$ obligation vectors verified against the frozen reference conformance oracle (proven by `rfl` in `AutomatonSoundness.lean`);
+   - $80,000$ complete bounded $\operatorname{DecisionView}$ state space permutations verified against the reference conformance oracle. This evaluation is an **exhaustive bounded conformance evaluation** over the current bounded 4-obligation $\operatorname{DecisionView}$ representation with current Boolean and aggregate fields (not an unbounded proof of all possible future P10 profiles).
 
 ---
 
 ## 9. Formalization Boundary & Trusted External Layer
 
-The S2 witness-aggregation and adjudication core is machine-checked in Lean 4 with zero custom axioms.
+**Frozen Scope:**  
+The machine-checked S2 witness-aggregation and adjudication semantics at the bound commit. The freeze does not assert correctness of external evidence acquisition, cryptographic implementations, network sources, or domain-specific empirical checkers beyond their separately recorded execution evidence.
 
 **Epistemic Boundary Statement:**  
 The Lean formalization mathematically certifies:
