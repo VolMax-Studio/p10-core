@@ -5,7 +5,7 @@
 </p>
 
 **Current Milestone:** `P10-Core v0.3.0 — S2 Semantic Core`  
-**Current Frozen Tag:** [`v0.3.0-s2-freeze`](https://github.com/VolMax-Studio/p10-core/releases/tag/v0.3.0-s2-freeze)  
+**Current Frozen Tag:** [`v0.3.0-s2-freeze`](https://github.com/VolMax-Studio/p10-core/tree/v0.3.0-s2-freeze)  
 **Frozen Semantic Commit:** `fa7878a538f56ee9b3c8008ca71e93c04c69ecf4`  
 **Status:** $\boxed{\textbf{PUBLIC / FROZEN}}$  
 **Author:** VolMax Studio Lab / Nestorov, Ivan (ORCID: [`0009-0006-7940-9539`](https://orcid.org/0009-0006-7940-9539))  
@@ -52,10 +52,14 @@ where:
 - **$E$ (Evidence Bundle):** The external, hashed input dataset;
 - **$R$ (Rules):** The formal admissibility and semantic transformation rules;
 - **$F$ (Frozen Protocol):** The pre-registered cryptographic commitment;
-- **$\mathcal{V}$ (Verdicts):** The discrete, mutually disjoint verdict type:
-  $$\mathcal{V} = \{\texttt{verified}, \texttt{notDemonstrated}, \texttt{unfalsifiableAsStated}, \texttt{deferred}\}$$
+- **$\mathcal{V}$ (Verdicts):** The discrete, mutually disjoint verdict type.
+  For the current S2 semantic core:
+  $$\mathcal{V}^* = \{\texttt{Verified}, \texttt{VerifiedWithLimitations}, \texttt{NotVerified}, \texttt{NotDemonstrated}, \texttt{UnfalsifiableAsStated}, \texttt{Deferred}\}$$
+  *(Note: The legacy v0.2 `P10Core.Spec.Verdict` remains unchanged for predecessor compatibility; S2 introduces its own `S2Verdict` type in the adjudication layer [`P10Core.Model.AdjudicationAutomaton`](P10Core/Model/AdjudicationAutomaton.lean)).*
 - **$D$ (Decision Procedure):** The computable function mapping inputs to a run outcome:
   $$\mathrm{RunOutcome} = \mathrm{Verdict}(v, \kappa) \uplus \mathrm{ProtocolError}(\epsilon, \rho)$$
+  In S2, this is unified under the total outcome space:
+  $$\Omega = \operatorname{ProtocolError}(\text{reason}) \uplus \mathcal{V}^*$$
 - **$H$ (Human Ratification):** The terminal socio-technical act separating mechanical execution from binding legal/institutional issuance:
   $$\mathrm{IssuanceOutcome} = \mathrm{Issued} \uplus \mathrm{RejectedByRatifier} \uplus \mathrm{RatificationError}$$
 
