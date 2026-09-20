@@ -4,18 +4,19 @@
   <img src="assets/p10_core_banner.png" alt="P10-Core Verification Protocol" width="100%">
 </p>
 
-**Milestone:** `P10-Core / Composition Layer (v0.2.2-gateclosure) — Machine-Checked Composition & Gate Closure`  
-**Release Tag:** `v0.2.2-gateclosure` (Predecessors: `v0.2.1-gatefix`, `v0.2.0-composition`, `v0.1.0-four-evidence`)  
+**Current Milestone:** `P10-Core v0.3.0 — S2 Semantic Core`  
+**Current Frozen Tag:** [`v0.3.0-s2-freeze`](https://github.com/VolMax-Studio/p10-core/releases/tag/v0.3.0-s2-freeze)  
+**Frozen Semantic Commit:** `fa7878a538f56ee9b3c8008ca71e93c04c69ecf4`  
+**Status:** $\boxed{\textbf{PUBLIC / FROZEN}}$  
 **Author:** VolMax Studio Lab / Nestorov, Ivan (ORCID: [`0009-0006-7940-9539`](https://orcid.org/0009-0006-7940-9539))  
 **Contributors:** Ivan Nestorov, Sol, Astra, Ananke  
 **Toolchain:** Lean 4.34.0 (`leanprover/lean4:v4.34.0`), Lake 5.0.0  
 **License:** Apache 2.0  
-**Gate Status:** **READY FOR GATE CLOSURE CHECK** (Adversarial Gate 002 Remediation)  
-
+**Predecessor Milestones:** `v0.2.2-gateclosure`, `v0.2.1-gatefix`, `v0.2.0-composition`, `v0.1.0-four-evidence`  
 
 ---
 
-## 1. Overview
+## 1. Overview & Milestone Lineage
 
 **P10-Core** is a formal, certificate-carrying verification protocol designed to adjudicate empirical and operational claims under pre-registered, immutable evidentiary rules.
 
@@ -25,9 +26,18 @@ $$\mathrm{Truth}_M(c) \neq \mathrm{Supports}_P(e, c, \kappa, v)$$
 
 A positive verification indicates that an admissible evidence bundle $e$, evaluated under frozen protocol rules $P$, deterministically yields certificate $\kappa$ supporting verdict $v$. When evidence is insufficient, the protocol does not declare falsehood; it strictly and soundly outputs `NotDemonstrated`.
 
-This repository contains:
-1. **The Frozen Seed (`v0.1.0-four-evidence`):** A fully verified, synthetic `FourEvidence` instance establishing executable checker soundness against a declarative calculus.
-2. **The Composition Layer (`v0.2.1-gatefix`):** A bounded, typed four-stage transition chain with machine-checked local soundness, agreement, and fidelity obligations, completely remediated against adversarial gate findings (C-01 through C-11).
+### Milestone Lineage:
+- **v0.1 — FourEvidence Seed (`v0.1.0-four-evidence`):** Fully verified, synthetic `FourEvidence` instance establishing executable checker soundness against a declarative calculus.
+- **v0.2 — Bounded Composition & Gate Closure (`v0.2.2-gateclosure`):** Bounded four-stage transition chain with machine-checked local soundness, agreement, and gate closure (subject of empirical audit [`P10-audit-P10-s1`](https://github.com/VolMax-Studio/p10-audit-p10-s1)).
+- **v0.3 — Deterministic S2 Adjudication Semantics (`v0.3.0-s2-freeze`):** **Current frozen semantic core.** Machine-checked witness aggregation, total `DecisionView` adjudication automaton, fail-closed precedence, and demarcation soundness (`Missing ≠ CheckerError ≠ Violated`).
+
+### Relationship Between Protocol Core and Audit Evidence Repositories:
+- **`p10-core` = What P10 is:** The specification, formal model, mechanized proofs, and reference semantics of the P10 protocol family.
+- **`p10-audit-p10-s1` = Empirical audit evidence:** A separate, historically sealed repository containing the pre-registration, execution traces (`run-001`), and final ratification of an empirical audit conducted on `p10-core` at `v0.2.2-gateclosure`.
+- The empirical lessons from S1 (eliminating Step 5 human interpretive discretion, formalizing witness classification, separating checker failures from substantive violations, and mechanizing the limitation calculus) directly informed the design of **S2** in `p10-core`.
+- Future empirical audits of S2 will be instantiated in dedicated audit repositories (e.g. `p10-audit-p10-s2`) targeting the frozen `p10-core@fa7878a...` commit.
+
+> **Frozen Scope (v0.3.0):** The machine-checked S2 witness-aggregation and adjudication semantics at commit `fa7878a538f56ee9b3c8008ca71e93c04c69ecf4`. The freeze does not assert correctness of external evidence acquisition, cryptographic implementations, network sources, or domain-specific empirical checkers beyond their separately recorded execution evidence.
 
 ---
 
@@ -157,6 +167,34 @@ The `FourEvidence` formalization is a **synthetic bounded instance** designed to
 - `evaluable` and `operationalizable` coincide (`fun c => c.operationalizable`).
 - `noProtocolFault c e := e.admissible = true` is implied by the preflight check.
 
+---
+
+### Layer 3: Deterministic S2 Adjudication Automaton (`v0.3.0-s2-freeze`)
+*Mechanized in [`P10Core/Model/AdjudicationAutomaton.lean`](P10Core/Model/AdjudicationAutomaton.lean) and [`P10Core/Proofs/AutomatonSoundness.lean`](P10Core/Proofs/AutomatonSoundness.lean)*:
+
+#### 1. Total Witness Classification & Fail-Closed Aggregation
+- **Four-Valued Witness Class:** `satisfied | violated | blocked | checkerError`.
+- **Five-Valued Obligation Status:** `satisfied | violated | blocked | missing | checkerError`.
+- **Aggregation Precedence:**
+  $$\texttt{CheckerError} \succ \texttt{Violated} \succ \texttt{Blocked} \succ \texttt{Satisfied} \succ \texttt{Missing}$$
+  Admissible witness classifications are aggregated deterministically: empty admissible set yields `Missing`, any checker fault triggers fail-closed `ProtocolError(checkerFailure)`, and substantive violation strictly dominates blockers and satisfactions.
+
+#### 2. Total Adjudication Automaton over `DecisionView`
+- **Full Observational Input (`DecisionView`):** Structured record encoding protocol integrity status, claim falsifiability, obligation evaluation vector, limitation registry vector, and admissible novel findings.
+- **Terminal Outcome Space $\Omega$:**
+  $$\Omega = \operatorname{ProtocolError}(\text{reason}) \uplus \mathcal{V}^*$$
+  where $\mathcal{V}^* = \{\texttt{Verified}, \texttt{VerifiedWithLimitations}, \texttt{NotVerified}, \texttt{NotDemonstrated}, \texttt{UnfalsifiableAsStated}, \texttt{Deferred}\}$.
+- **Pure Decision Function:** `adjudicate (dv : DecisionView) : TerminalOutcome` is total, unique, and strictly deterministic ($|\operatorname{Next}(s)| = 1$).
+
+#### 3. Formal Demarcation Theorems (All Axiom-Free)
+- **`missing_not_notVerified`:** Proves `Missing` evidence never collapses into `NotVerified`.
+- **`violated_not_notDemonstrated`:** Proves substantive violation never collapses into `NotDemonstrated`.
+- **`evalVector_completeness_invariance`:** Completeness depends solely on absence of `Missing` obligations.
+- **`decisionView_representation_invariance`:** Evaluator representation invariance holds over the full `DecisionView`.
+
+#### 4. Adversarial Reference Oracle Conformance
+- **`corpus625_oracle_conformity`:** All $5^4 = 625$ adversarial obligation permutations verified against the reference oracle, proven by Lean 4 kernel reflection (`by rfl`).
+- **Exhaustive Bounded Conformance Evaluation:** All 80,000 bounded `DecisionView` states evaluated at compile-time (`#eval fullDecisionViewSpace.all ...`), confirming complete conformance against `oracleAdjudicate`.
 
 ---
 
@@ -164,9 +202,10 @@ The `FourEvidence` formalization is a **synthetic bounded instance** designed to
 
 This repository adheres to the fundamental P10 principle: **never hide trust—explicitly bound and name it.**
 
-As audited in [`AXIOM_AUDIT.md`](AXIOM_AUDIT.md):
+As audited in [`AXIOM_AUDIT.md`](AXIOM_AUDIT.md) and [`S2_FREEZE_RECORD.md`](S2_FREEZE_RECORD.md):
 - **Zero `sorry` / zero `admit`:** Scanned across the entire codebase.
 - **Zero user-declared `axiom`:** No custom axioms exist in the Lean environment.
+- **S2 Automaton Soundness:** All 17 theorems in `P10Core.Proofs.AutomatonSoundness` depend on **zero axioms** (`[]`).
 - **Kernel Axiom Report:**
   ```text
   'P10Core.Proofs.Composition.conditionalComposition' does not depend on any axioms
@@ -184,9 +223,9 @@ As audited in [`AXIOM_AUDIT.md`](AXIOM_AUDIT.md):
 
 To prevent overclaims and maintain strict scientific hygiene:
 1. **No Claim of Ontological Truth:** Verifying composition proves that the transition chain faithfully preserves agreements and fidelity down to `Supports`; it does not prove physical truth outside the specified bridge assumptions ($B_i$).
-2. **No Global P10 Soundness:** Proved for the bounded `FourEvidence` multi-stage pipeline, not as a universal metatheorem over arbitrary untyped programs.
+2. **No Global P10 Soundness:** Proved for the bounded `FourEvidence` multi-stage pipeline and the bounded S2 automaton, not as a universal metatheorem over arbitrary untyped programs.
 3. **No Cryptographic Collision Resistance:** Evidence digests remain in the abstract model.
-4. **No Unbounded Composition:** The composition theorem covers the specified finite 4-stage chain; unbounded transfinite progressions are explicitly bounded by Gödel/Löb limitative results.
+4. **No Verification of External Acquisition:** Lean certifies the mathematical adjudication logic over abstract records; correctness of operating system I/O, hash binaries, network fetching, and empirical checkers remains outside the formal verification boundary.
 
 ---
 
@@ -203,14 +242,23 @@ p10-core/
 │   └── P10-Core-v0.2.0-composition.zip.sha256 # Predecessor checksum
 ├── manifests/
 │   ├── SHA256SUMS_v0.2.0-composition          # Predecessor file manifest
-│   └── SHA256SUMS_v0.2.1-gatefix              # Current release manifest (22 files)
+│   ├── SHA256SUMS_v0.2.1-gatefix              # Predecessor file manifest
+│   └── SHA256SUMS_v0.2.2-gateclosure          # v0.2.2 gate closure manifest
 ├── reviews/
 │   └── GATE_v0.2.0-composition_CLAUDE_001.md  # Original adversarial gate report
 ├── scripts/
 │   └── verify.sh                  # Clean-room build, axiom audit & checksum verification
+├── spec/
+│   ├── P10-Core-v0.1.md           # v0.1 specification
+│   ├── P10-Core-v0.2.md           # v0.2 specification
+│   ├── P10-Core-v0.2.1.md         # v0.2.1 specification
+│   └── P10-Core-v0.3-S2-Semantics.md # Current v0.3 S2 specification
 ├── AXIOM_AUDIT.md                 # Complete kernel trust boundary audit
+├── GATE_CLOSURE.md                # Gate 002 remediation & closure audit
 ├── GATE_RESPONSE.md               # Point-by-point response to Gate 001 findings
-├── RELEASE_NOTES.md               # v0.2.1 release notes
+├── RATIFICATION.md                # Formal human ratification record of v0.2.2
+├── S2_FREEZE_MANIFEST.sha256      # Frozen S2 artifact checksum manifest (44 files)
+├── S2_FREEZE_RECORD.md            # Sealed S2 clean-room freeze record
 ├── README.md                      # Primary project documentation
 ├── lakefile.toml                  # Lake package definition
 ├── lake-manifest.json             # Pinned package dependencies
@@ -218,10 +266,11 @@ p10-core/
 ├── P10Core.lean                   # Top-level module import
 └── P10Core/
     ├── Spec/
-    │   └── Core.lean              # Core P10 data types and verdict definitions
+    │   └── Core.lean              # Core P10 data types and legacy v0.2 verdict definitions
     ├── Model/
     │   ├── Calculus.lean          # Declarative Supports calculus
-    │   └── Rules.lean             # Rule definitions and soundness interfaces
+    │   ├── Rules.lean             # Rule definitions and soundness interfaces
+    │   └── AdjudicationAutomaton.lean # v0.3 S2 witness aggregation & adjudication automaton
     ├── Instances/
     │   └── FourEvidence/
     │       ├── Model.lean         # Concrete instance & inhabited DigestModel
@@ -230,7 +279,8 @@ p10-core/
     └── Proofs/
         ├── FourEvidence.lean      # Kernel-checked checker soundness & disjointness
         ├── Composition.lean       # Conditional & discharged composition theorems
-        └── PositiveWitness.lean   # Positive constructive witnesses & #eval checks
+        ├── PositiveWitness.lean   # Positive constructive witnesses & #eval checks
+        └── AutomatonSoundness.lean # v0.3 S2 automaton soundness, demarcation & oracles
 ```
 
 ---
