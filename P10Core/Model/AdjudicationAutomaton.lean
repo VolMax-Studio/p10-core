@@ -1,5 +1,13 @@
 namespace P10Core.Model.AdjudicationAutomaton
 
+/-- 4-valued classification for an individual admissible witness -/
+inductive WitnessClass where
+  | satisfied
+  | violated
+  | blocked
+  | checkerError
+  deriving DecidableEq, Repr, Inhabited
+
 /-- 5-valued evaluation status for an individual obligation -/
 inductive EvalStatus where
   | satisfied
@@ -8,6 +16,19 @@ inductive EvalStatus where
   | missing
   | checkerError
   deriving DecidableEq, Repr, Inhabited
+
+/-- Deterministic, fail-closed aggregation of admissible witnesses into obligation EvalStatus -/
+def aggregateWitnessClasses (ws : List WitnessClass) : EvalStatus :=
+  if ws.isEmpty then
+    EvalStatus.missing
+  else if ws.contains WitnessClass.checkerError then
+    EvalStatus.checkerError
+  else if ws.contains WitnessClass.violated then
+    EvalStatus.violated
+  else if ws.contains WitnessClass.blocked then
+    EvalStatus.blocked
+  else
+    EvalStatus.satisfied
 
 /-- 6-verdict terminal outcome space for S2 -/
 inductive S2Verdict where

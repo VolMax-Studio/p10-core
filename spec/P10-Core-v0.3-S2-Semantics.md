@@ -65,9 +65,12 @@ Totality of $\operatorname{Eval}(E, o)$ is achieved via strict, fail-closed prec
 Thus, $\operatorname{Eval}(E, o) \in \{\texttt{Satisfied}, \texttt{Violated}, \texttt{Blocked}, \texttt{Missing}, \texttt{CheckerError}\}$ is uniquely and totally defined.
 
 ### 2.3 Definition of Obligation-Based Completeness
-The predicate $\operatorname{EvidenceComplete}(P, E)$ asserts that every obligation has at least one admissible, evaluable witness:
+The predicate $\operatorname{EvidenceComplete}(P, E)$ asserts that no obligation lacks admissible evidence; it does not imply successful evaluation or substantive satisfaction:
 
 $$\boxed{\operatorname{EvidenceComplete}(P, E) \iff \forall o \in \mathcal{O}(P),\, \operatorname{Eval}(E, o) \neq \texttt{Missing}}$$
+
+This strictly preserves the tri-part epistemic demarcation:
+$$\text{Missing evidence} \neq \text{checker failure} \neq \text{substantive violation}$$
 
 **EvalVector Invariance Lemma for Completeness:**  
 If two evidence bundles $E_1$ and $E_2$ yield identical obligation evaluation vectors:
